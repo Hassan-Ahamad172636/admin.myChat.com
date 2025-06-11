@@ -1,51 +1,50 @@
-<div class="bg-sky-50 min-h-screen flex items-center justify-center py-6 px-3">
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl">
+<div class="min-h-screen bg-gray-900 text-white flex items-center justify-center px-4 py-10">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl w-full items-center">
 
     <!-- Left Side: Login Form -->
-    <div class="px-4 md:px-7">
-      <h1 class="font-bold text-blue-600 text-xl md:text-2xl mb-3 text-center md:text-left">My chat</h1>
+    <div class="w-full">
+      <h1 class="text-3xl font-bold text-blue-500 mb-6 text-center md:text-left">Welcome to MyChat</h1>
 
-      <div class="py-5 text-center text-lg font-semibold border-2 border-blue-600 rounded-3xl px-4 md:px-6">
-        <h1 class="text-lg md:text-xl mb-3">Login</h1>
+      <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 md:p-8 shadow-lg">
+        <h2 class="text-xl font-semibold text-center mb-4">Login to your account</h2>
 
         <!-- Inputs -->
-        <div class="inputs text-left space-y-3 text-sm">
-
+        <div class="space-y-4 text-sm">
           <div>
-            <label for="email" class="text-xs font-medium">Email</label>
+            <label class="block mb-1 text-gray-300">Email</label>
             <input
               type="email"
               [(ngModel)]="userObj.email"
-              placeholder="Email Address..."
-              class="font-medium w-full p-2 text-xs rounded-md border-2 text-black border-blue-500 bg-transparent focus:outline-none focus:ring-1 focus:ring-blue-500"
+              placeholder="Email address..."
+              class="w-full p-2 rounded-md bg-gray-900 border border-gray-600 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label for="password" class="text-xs font-medium">Password</label>
+            <label class="block mb-1 text-gray-300">Password</label>
             <input
               type="password"
               [(ngModel)]="userObj.password"
               placeholder="Your password..."
-              class="font-medium w-full p-2 text-xs rounded-md border-2 text-black border-blue-500 bg-transparent focus:outline-none focus:ring-1 focus:ring-blue-500"
+              class="w-full p-2 rounded-md bg-gray-900 border border-gray-600 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <button
-            class="bg-blue-600 mt-2 rounded-md outline-none text-center text-xs p-2 text-white w-full hover:bg-blue-700 transition duration-200"
             (click)="login()"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md transition duration-200"
           >
             Login
           </button>
 
-          <div class="flex items-center my-2">
-            <hr class="flex-grow border-t border-gray-300" />
-            <span class="mx-2 text-gray-500 text-xs">or</span>
-            <hr class="flex-grow border-t border-gray-300" />
+          <div class="flex items-center my-4 text-gray-400 text-xs">
+            <hr class="flex-grow border-gray-700" />
+            <span class="px-2">OR</span>
+            <hr class="flex-grow border-gray-700" />
           </div>
 
           <button
-            class="rounded-md outline-none border-2 border-blue-600 text-center text-xs p-2 text-blue-600 w-full hover:bg-blue-100 transition duration-200"
+            class="w-full border border-blue-500 text-blue-400 hover:bg-gray-700 p-2 rounded-md transition duration-200"
           >
             Login with Google
           </button>
@@ -54,7 +53,7 @@
     </div>
 
     <!-- Right Side: Lottie -->
-    <div class="flex justify-center items-center px-2">
+    <div class="flex justify-center md:justify-end items-center">
       <ng-lottie [options]="lottieOptions" class="h-52 w-52 md:h-80 md:w-80"></ng-lottie>
     </div>
 

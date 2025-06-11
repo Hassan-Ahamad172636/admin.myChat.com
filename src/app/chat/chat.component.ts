@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserService } from '../services/user.service';
 import { ChatService } from '../services/chat.service';
-import { SocketService } from '../services/socket.service';
+// import { SocketService } from '../services/socket.service';
 import { jwtDecode } from 'jwt-decode';
 import { Subscription } from 'rxjs';
 
@@ -28,7 +28,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   chats: any[] = [];
   message: any;
   conversationId: any;
-  messages: any = []; // Initialize empty array
+  messages: any = [];
   username: any;
   isChatOpenOnMobile = false;
   selectedUser: string = '';
@@ -43,32 +43,30 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.selectedUser = '';
   }
 
-  private socketSub!: Subscription;
+  // private socketSub!: Subscription;
 
   constructor(
     private _userService: UserService,
     private _chatService: ChatService,
-    private socketService: SocketService
+    // private socketService: SocketService
   ) {}
 
   ngOnInit() {
     this.getUserIdFromToken();
     this.getAllUser();
 
-    this.socketSub = this.socketService.onMessage().subscribe((msg: any) => {
-      if (msg.conversationId === this.conversationId) {
-        this.messages = [...this.messages, msg];
-      } else {
-      }
-    });
+    // this.socketSub = this.socketService.onMessage().subscribe((msg: any) => {
+    //   if (msg.conversationId === this.conversationId) {
+    //     this.messages = [...this.messages, msg];
+    //   }
+    // });
   }
 
   ngOnDestroy() {
-    this.socketSub.unsubscribe();
-
-    if (this.conversationId) {
-      this.socketService.leaveRoom(this.conversationId);
-    }
+    // if (this.socketSub) this.socketSub.unsubscribe();
+    // if (this.conversationId) {
+    //   this.socketService.leaveRoom(this.conversationId);
+    // }
   }
 
   getUserIdFromToken() {
@@ -103,7 +101,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.username = res?.data?.conversation.receiverId.fullName;
         this.getMessages();
 
-        this.socketService.joinRoom(this.conversationId);
+        // this.socketService.joinRoom(this.conversationId);
       },
       error: (err) => {
         console.error('Failed to create conversation', err);
@@ -122,21 +120,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   sendMessage() {
     if (!this.message?.trim()) return;
 
-    const msgData = {
-      conversationId: this.conversationId,
-      message: this.message,
-      senderId: this.currentUserId,
-      createdAt: new Date(),
-    };
-
     this._chatService.send(this.conversationId, this.message).subscribe({
       next: (resp: any) => {
         this.message = '';
-
-        // REMOVE this line — backend socket event se hi message aayega
-        this.socketService.sendMessage(msgData);
-
-        // DO NOT manually push message here either
+        this.getMessages(); // fetch updated messages list after send
+        // this.socketService.sendMessage(msgData);
       },
       error: (err) => {
         console.error('Failed to send message:', err);
