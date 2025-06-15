@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 })
 export class UserService {
   baseUrl: any = environment.apiUrl;
-  modelPath: any = "user/";
+  modelPath: any = 'user/';
   constructor(private http: HttpClient) {}
 
   createUser(data: any) {
@@ -17,8 +17,12 @@ export class UserService {
   getAllUser() {
     return this.http.get(`${this.baseUrl}${this.modelPath}get-all`);
   }
-  
+
   loginUser(data: any) {
     return this.http.post(`${this.baseUrl}${this.modelPath}login/`, data);
-  };
+  }
+
+  addFriend(id: any) {
+    return this.http.patch(`${this.baseUrl}/friends/addFriend/${id}`, {});
+  }
 }

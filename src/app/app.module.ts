@@ -14,6 +14,8 @@ import { FormsModule } from '@angular/forms';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { AuthInterceptor } from './auth.interceptor';
 import { SettingsComponent } from './settings/settings.component';
+import { ToastrModule } from 'ngx-toastr';
+import { AllusersComponent } from './allusers/allusers.component';
 
 export function playerFactory() {
   return player;
@@ -27,20 +29,22 @@ export function playerFactory() {
     ChatComponent,
     NotFoundComponent,
     SettingsComponent,
+    AllusersComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    ToastrModule.forRoot(),
     LottieModule.forRoot({ player: playerFactory }),
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
-      multi: true
-    }
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent],
 })

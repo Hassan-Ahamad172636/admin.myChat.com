@@ -11,10 +11,23 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit, OnDestroy {
+  isMobileView: boolean = false;
+  showChat: boolean = false;
+  selectedUser: any = null;
+  checkScreenSize() {
+    this.isMobileView = window.innerWidth <= 768;
+    if (!this.isMobileView) {
+      this.showChat = false;
+    }
+  }
+
+  onUserClick(user: any) {
+    this.selectedUser = user;
+    this.conversationId = 'dummyId'; // replace with real
+  }
+
   lottieOptions: any = {
-    path: '../../assets/Animation - 1749431376588.json',
-    autoplay: true,
-    loop: true,
+    path: 'https://assets2.lottiefiles.com/packages/lf20_tll0j4bb.json', // 👈 You can change Lottie here
   };
 
   lottieSecondOptions: any = {
@@ -31,7 +44,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   messages: any = []; // Initialize empty array
   username: any;
   isChatOpenOnMobile = false;
-  selectedUser: string = '';
 
   openChatOnMobile(userName: string) {
     this.isChatOpenOnMobile = true;
@@ -70,6 +82,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getUserIdFromToken();
     this.getAllUser();
+    this.checkScreenSize();
+    window.addEventListener('resize', this.checkScreenSize.bind(this));
 
     // ✅ Join room on load (you can adjust this logic later)
     this.joinMyRooms();
@@ -120,6 +134,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   createConversation(receiverId: string) {
+    if (this.isMobileView) {
+      this.showChat = true;
+    }
     this._chatService.conversation({ receiverId: receiverId }).subscribe({
       next: (res: any) => {
         this.conversationId = res?.data?.conversation?._id;

@@ -1,146 +1,112 @@
-<div class="flex flex-col sm:flex-row h-screen bg-gray-900 text-gray-100">
-  <!-- Sidebar -->
+<div class="flex h-screen">
+  <!-- Left Sidebar (Icons only) -->
   <div
-  class="transition-all duration-300 ease-in-out bg-gray-800 border-r border-gray-700 flex flex-col"
-  [ngClass]="{
-    'w-0 sm:w-0 h-0 overflow-hidden': isChatOpenOnMobile && selectedUser,
-    'w-full sm:w-1/4 h-auto sm:min-h-screen': !isChatOpenOnMobile || !selectedUser
-  }"
->
+    class="w-[50px] bg-blue-600 flex flex-col justify-end items-center py-4 space-y-6 text-white"
+  >
+    <button class="hover:text-blue-200" routerLink="/users">
+      <i class="fas fa-user-plus text-sm md:text-base"></i>
+    </button>
+    <button class="hover:text-blue-200">
+      <i class="fas fa-user-friends text-sm md:text-base"></i>
+    </button>
+    <button class="hover:text-blue-200" routerLink="/settings">
+      <i class="fas fa-cog text-sm md:text-base"></i>
+    </button>
+  </div>
 
-    <!-- Search -->
-    <div class="px-3 py-2 border-b border-gray-700">
-      <div class="relative">
-        <div
-          class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-        >
-          <i class="fas fa-search text-gray-400 text-xs"></i>
-        </div>
-        <input
-          type="text"
-          placeholder="Search"
-          class="w-full pl-8 px-2 py-1.5 border border-gray-600 bg-gray-700 rounded-md text-xs text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400"
-        />
-      </div>
-    </div>
+  <!-- Second Sidebar (Users List) -->
+  <div
+    [ngClass]="{
+      'w-[250px]': !isMobileView,
+      'w-full': isMobileView && !showChat
+    }"
+    class="bg-white border-r border-gray-300 p-1 overflow-y-auto"
+    *ngIf="!isMobileView || (isMobileView && !showChat)"
+  >
+    <h2 class="text-base md:text-lg font-semibold mb-4 text-gray-700 p-2">
+      Your Friends
+    </h2>
 
-    <!-- User List -->
-    <div class="flex-1 overflow-y-auto">
-      <div
-        *ngFor="let user of users"
-        class="px-3 py-2 flex items-center space-x-2 hover:bg-gray-700 cursor-pointer transition-colors"
-        (click)="createConversation(user._id); openChatOnMobile(user.fullName)"
-      >
-        <div class="truncate max-w-full" *ngIf="user._id !== currentUserId">
-          <p class="text-xs truncate text-gray-100" title="{{ user.fullName }}">
-            {{ user.fullName }}
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Settings Button -->
-    <div class="sticky bottom-0 bg-gray-800 border-t border-gray-700 px-3 py-2">
-      <button
-        class="w-full flex items-center justify-center space-x-1 bg-gray-700 hover:bg-gray-600 text-gray-100 px-3 py-1.5 rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-blue-400"
-        routerLink="/settings"
-      >
-        <i class="fas fa-cog text-sm"></i>
-        <span>Settings</span>
-      </button>
+    <div
+      *ngFor="let user of users"
+      (click)="createConversation(user._id)"
+      class="p-2 hover:bg-gray-100 rounded cursor-pointer text-sm md:text-sm"
+    >
+      <div *ngIf="user.isFriend" class="font-medium text-gray-800">{{ user.fullName }}</div>
     </div>
   </div>
 
-  <!-- Chat Area -->
+  <!-- Chat Section -->
   <div
-    class="flex-1 flex flex-col overflow-y-auto transition-transform duration-300 ease-in-out"
-    [ngClass]="{
-      'translate-x-full sm:translate-x-0':
-        !isChatOpenOnMobile && !conversationId
-    }"
-    *ngIf="conversationId"
+    class="flex-1 bg-gray-50 flex flex-col"
+    *ngIf="!isMobileView || (isMobileView && showChat)"
   >
-    <!-- Chat Header -->
+    <!-- Header -->
     <div
-      class="px-3 py-2 border-b border-gray-700 bg-gray-800 flex items-center space-x-2 sm:space-x-2"
+      *ngIf="conversationId"
+      class="p-3 md:p-4 border-b bg-white shadow-sm flex justify-between items-center"
     >
-      <!-- Back button mobile -->
+      <h3 class="text-base md:text-lg font-semibold text-gray-700">
+        {{ selectedUser?.fullName || "Chat Area" }}
+      </h3>
       <button
-        class="sm:hidden text-gray-400 text-sm"
-        (click)="closeChatOnMobile()"
+        class="md:hidden text-blue-600 text-sm"
+        (click)="showChat = false"
       >
-        <i class="fas fa-arrow-left"></i>
+        Back
       </button>
-
-      <div class="w-8 h-8 bg-gray-600 rounded-full"></div>
-      <p class="font-semibold text-sm text-gray-100 truncate">{{ username }}</p>
     </div>
 
-    <!-- Chat Messages -->
-    <div
-      class="flex-1 flex flex-col space-y-1 overflow-y-auto px-3 py-2"
-      *ngIf="messages?.length"
-    >
-      <div
-        class="flex items-start space-x-2"
-        *ngFor="let msg of messages"
-        [ngClass]="{
-          'justify-end': msg?.senderId === currentUserId,
-          'justify-start': msg?.senderId !== currentUserId
-        }"
-      >
+    <!-- Messages -->
+    <div class="flex-1 overflow-y-auto p-3 md:p-4">
+      <ng-container *ngIf="messages.length > 0; else emptyChat">
         <div
-          class="bg-blue-600 text-white px-3 py-1.5 rounded-md shadow text-xs max-w-[75%]"
-          *ngIf="msg?.senderId !== currentUserId"
+          *ngFor="let msg of messages"
+          class="mb-2 flex"
+          [ngClass]="{
+            'justify-end': msg.senderId === currentUserId,
+            'justify-start': msg.senderId !== currentUserId
+          }"
         >
-          {{ msg?.message }}
-          <div class="text-[10px] text-gray-300 text-right mt-0.5">
-            {{ msg?.createdAt | date : "shortTime" }}
+          <div
+            [ngClass]="{
+              'bg-blue-500 text-white': msg.senderId === currentUserId,
+              'bg-white text-gray-800 border': msg.senderId !== currentUserId
+            }"
+            class="p-2 rounded max-w-xs text-xs md:text-sm"
+          >
+            {{ msg.message }}
           </div>
         </div>
+      </ng-container>
 
-        <div
-          class="bg-gray-700 text-gray-100 px-3 py-1.5 rounded-md shadow text-xs max-w-[75%]"
-          *ngIf="msg?.senderId === currentUserId"
-        >
-          {{ msg.message }}
-          <div class="text-[10px] text-gray-400 text-right mt-0.5">
-            {{ msg?.createdAt | date : "shortTime" }}
-          </div>
+      <!-- Empty Chat Lottie -->
+      <ng-template #emptyChat>
+        <div class="flex items-center justify-center h-full">
+          <ng-lottie
+            [options]="lottieOptions"
+            style="width: 200px; height: 200px"
+          ></ng-lottie>
         </div>
-      </div>
+      </ng-template>
     </div>
 
+    <!-- Input -->
     <div
-      *ngIf="!messages?.length"
-      class="h-56 flex justify-center items-center w-full"
-    >
-      <ng-lottie [options]="lottieSecondOptions"></ng-lottie>
-    </div>
-
-    <!-- Chat Input -->
-    <div
-      class="px-3 py-2 border-t border-gray-700 sticky bottom-0 bg-gray-800 flex items-center space-x-2"
+      *ngIf="conversationId"
+      class="p-3 md:p-4 border-t bg-white flex items-center gap-2"
     >
       <input
-        type="text"
         [(ngModel)]="message"
-        placeholder="Message..."
-        class="flex-1 px-2 py-1.5 border border-gray-600 bg-gray-700 rounded-md text-xs text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-400"
+        placeholder="Type a message"
+        class="flex-1 border border-gray-300 rounded px-3 py-2 text-xs md:text-sm focus:outline-none"
       />
       <button
         (click)="sendMessage()"
-        class="bg-blue-500 text-white p-2 text-xs h-8 w-8 rounded-full flex items-center justify-center"
+        class="bg-blue-600 text-white px-3 py-1.5 text-xs md:text-sm rounded hover:bg-blue-700"
       >
-        <i class="fas fa-paper-plane text-xs"></i>
+        Send
       </button>
     </div>
   </div>
-
-  <!-- Lottie Initial -->
-  <ng-lottie
-    *ngIf="!conversationId && !isChatOpenOnMobile"
-    [options]="lottieOptions"
-    class="hidden sm:block mx-36 my-20 h-52 w-52"
-  ></ng-lottie>
 </div>

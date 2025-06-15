@@ -12,6 +12,14 @@ export class LoginComponent {
     private _userService: UserService,
     private router: Router
   ) {}
+  loginData: any = {
+    email: '',
+    password: '',
+  };
+
+  loginUser() {
+    // functionality tum add kar lena
+  }
   lottieOptions: any = {
     path: '../../assets/Animation - 1749186681163.json',
     autoplay: true,

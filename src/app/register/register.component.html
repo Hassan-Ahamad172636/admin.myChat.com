@@ -1,69 +1,67 @@
-<div class="min-h-screen bg-gray-900 text-white flex items-center justify-center px-4 py-10">
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl w-full items-center">
+<div class="min-h-screen bg-gray-100 text-gray-800 flex items-center justify-center px-4 py-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl w-full items-center">
 
-    <!-- Left Side: Form -->
-    <div class="w-full">
-      <h1 class="text-3xl font-bold text-blue-500 mb-6 text-center md:text-left">Welcome to MyChat</h1>
+    <!-- Left Side: Lottie -->
+    <div class="hidden md:flex justify-center">
+      <ng-lottie
+        [options]="{
+          path: 'https://assets4.lottiefiles.com/packages/lf20_t9gkkhz4.json',
+          autoplay: true,
+          loop: true
+        }"
+        class="h-40 w-40 lg:h-60 lg:w-60"
+      ></ng-lottie>
+    </div>
 
-      <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 md:p-8 shadow-lg">
-        <h2 class="text-xl font-semibold text-center mb-4">Create an Account</h2>
+    <!-- Right Side: Form -->
+    <div class="w-full">  
+      <div class="bg-white border border-gray-200 rounded-xl p-5 md:p-6 shadow-md">
+        <h2 class="text-lg font-semibold text-center mb-3">Create an Account</h2>
 
         <!-- Inputs -->
-        <div class="space-y-4 text-sm">
+        <div class="space-y-3 text-sm">
           <div>
-            <label class="block mb-1 text-gray-300">Full Name</label>
+            <label class="block mb-1 text-gray-600">Full Name</label>
             <input
               type="text"
               [(ngModel)]="userObj.fullName"
               placeholder="Your name..."
-              class="w-full p-2 rounded-md bg-gray-900 border border-gray-600 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full p-2 rounded-md bg-gray-50 border border-gray-300 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label class="block mb-1 text-gray-300">Email</label>
+            <label class="block mb-1 text-gray-600">Email</label>
             <input
               type="email"
               [(ngModel)]="userObj.email"
               placeholder="Email address..."
-              class="w-full p-2 rounded-md bg-gray-900 border border-gray-600 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full p-2 rounded-md bg-gray-50 border border-gray-300 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label class="block mb-1 text-gray-300">Password</label>
+            <label class="block mb-1 text-gray-600">Password</label>
             <input
               type="password"
               [(ngModel)]="userObj.password"
               placeholder="Create a password..."
-              class="w-full p-2 rounded-md bg-gray-900 border border-gray-600 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full p-2 rounded-md bg-gray-50 border border-gray-300 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <button
             (click)="createUser()"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md transition duration-200"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md transition duration-150"
           >
             Register
           </button>
 
-          <div class="flex items-center my-4 text-gray-400 text-xs">
-            <hr class="flex-grow border-gray-700" />
-            <span class="px-2">OR</span>
-            <hr class="flex-grow border-gray-700" />
-          </div>
-
-          <button
-            class="w-full border border-blue-500 text-blue-400 hover:bg-gray-700 p-2 rounded-md transition duration-200"
-          >
-            Continue with Google
-          </button>
-
-          <p class="text-xs text-center mt-4 text-gray-400">
+          <p class="text-xs text-center mt-3 text-gray-500">
             Already have an account?
             <a
               routerLink="/login"
-              class="text-blue-500 underline hover:text-blue-400"
+              class="text-blue-600 underline hover:text-blue-500"
             >
               Login here
             </a>
@@ -72,10 +70,5 @@
       </div>
     </div>
 
-    <!-- Right Side: Lottie -->
-    <div class="flex justify-center md:justify-end items-center">
-      <ng-lottie [options]="lottieOptions" class="h-52 w-52 md:h-80 md:w-80"></ng-lottie>
-    </div>
-    
   </div>
 </div>

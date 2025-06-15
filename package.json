@@ -10,7 +10,7 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^15.2.0",
+    "@angular/animations": "^15.2.10",
     "@angular/common": "^15.2.0",
     "@angular/compiler": "^15.2.0",
     "@angular/core": "^15.2.0",
@@ -25,6 +25,7 @@
     "jwt-decode": "^4.0.0",
     "lottie-web": "^5.13.0",
     "ngx-lottie": "^9.0.0",
+    "ngx-toastr": "^15.1.0",
     "rxjs": "~7.8.0",
     "socket.io-client": "^4.8.1",
     "tslib": "^2.3.0",
