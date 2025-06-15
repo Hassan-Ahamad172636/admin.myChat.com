@@ -51,22 +51,43 @@ export class ChatComponent implements OnInit, OnDestroy {
     private socketService: SocketService
   ) {}
 
+  joinMyRooms() {
+    if (this.conversationId) {
+      this._chatService.getMessages(this.conversationId).subscribe({
+        next: (res: any) => {
+          const allRooms = res.data || [];
+          for (const conv of allRooms) {
+            this.socketService.joinRoom(conv._id);
+          }
+        },
+        error: (err) => {
+          console.error('❌ Failed to join rooms', err);
+        },
+      });
+    }
+  }
+
   ngOnInit() {
     this.getUserIdFromToken();
     this.getAllUser();
-  
+
+    // ✅ Join room on load (you can adjust this logic later)
+    this.joinMyRooms();
+
+    // ✅ Listen for real-time messages
     this.socketSub = this.socketService.onMessage().subscribe((msg: any) => {
-      console.log('📥 Message received via socket:', msg); // <- Yeh log zaroori hai
-  
+      console.log('📥 New socket message received:', msg);
+
       if (msg.conversationId === this.conversationId) {
         this.messages = [...this.messages, msg];
       }
     });
   }
-  
 
   ngOnDestroy() {
-    this.socketSub.unsubscribe();
+    if (this.socketSub) {
+      this.socketSub.unsubscribe();
+    }
 
     if (this.conversationId) {
       this.socketService.leaveRoom(this.conversationId);
@@ -103,6 +124,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       next: (res: any) => {
         this.conversationId = res?.data?.conversation?._id;
         this.username = res?.data?.conversation.receiverId.fullName;
+
         this.getMessages();
 
         this.socketService.joinRoom(this.conversationId);
@@ -124,21 +146,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   sendMessage() {
     if (!this.message?.trim()) return;
 
-    const msgData = {
-      conversationId: this.conversationId,
-      message: this.message,
-      senderId: this.currentUserId,
-      createdAt: new Date(),
-    };
-
     this._chatService.send(this.conversationId, this.message).subscribe({
-      next: (resp: any) => {
+      next: () => {
         this.message = '';
-
-        // REMOVE this line — backend socket event se hi message aayega
-        this.socketService.sendMessage(msgData);
-
-        // DO NOT manually push message here either
       },
       error: (err) => {
         console.error('Failed to send message:', err);
@@ -146,6 +156,5 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
   }
 }
-
 
 // is code mein fil hal socket ko comment ker do or har message send kene ya conversation create kerne per get messages wali api caal  kerwa do
