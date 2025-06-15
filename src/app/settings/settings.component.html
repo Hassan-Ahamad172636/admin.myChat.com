@@ -1,10 +1,23 @@
+<!-- Left Sidebar (Fixed - Icons only) -->
+<div
+  class="fixed top-0 left-0 h-screen w-[50px] bg-blue-600 flex flex-col justify-end items-center py-4 space-y-6 text-white z-50"
+>
+  <button class="hover:text-blue-200" routerLink="/users">
+    <i class="fas fa-user-plus text-sm md:text-base"></i>
+  </button>
+  <button class="hover:text-blue-200" routerLink="/chat">
+    <i class="fas fa-user-friends text-sm md:text-base"></i>
+  </button>
+  <button class="hover:text-blue-200" routerLink="/settings">
+    <i class="fas fa-cog text-sm md:text-base"></i>
+  </button>
+</div>
 <div class="flex flex-col md:flex-row h-screen bg-gray-100 text-gray-800">
-
   <!-- Sidebar -->
   <div
-    [ngClass]="{ 'w-48': isSidebarOpen, 'w-16': !isSidebarOpen }"
-    class="transition-all duration-300 bg-white border-r border-gray-300 flex flex-col"
-  >
+  [ngClass]="{ 'w-48': isSidebarOpen, 'w-16': !isSidebarOpen }"
+  class="ml-[50px] transition-all duration-300 bg-white border-r border-gray-300 flex flex-col"
+>
     <!-- Toggle Button -->
     <button
       class="p-4 focus:outline-none text-right pr-6 text-gray-600 hover:text-blue-600"
@@ -46,11 +59,10 @@
 
   <!-- Main Content -->
   <div class="flex-1 p-4 md:p-6 overflow-y-auto">
-
     <!-- Status Section -->
     <div *ngIf="activeSection === 'status'" class="text-center">
       <h2 class="text-2xl font-semibold mb-4">Status</h2>
-      <ng-lottie 
+      <ng-lottie
         [options]="statusLottieOptions"
         style="width: 200px; height: 200px; margin: 0 auto"
       ></ng-lottie>
@@ -60,9 +72,15 @@
     <!-- Profile Section -->
     <div *ngIf="activeSection === 'profile'">
       <h2 class="text-2xl font-semibold mb-4">Profile</h2>
-      <div class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-6">
+      <div
+        class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-6"
+      >
         <div class="w-24 h-24 rounded-full bg-gray-300 overflow-hidden">
-          <img src="https://via.placeholder.com/150" alt="Profile" class="w-full h-full object-cover" />
+          <img
+            src="https://via.placeholder.com/150"
+            alt="Profile"
+            class="w-full h-full object-cover"
+          />
         </div>
         <div>
           <p class="text-base font-medium">Name: {{ userName }}</p>
@@ -80,7 +98,7 @@
     <!-- Logout Section -->
     <div *ngIf="activeSection === 'logout'" class="text-center">
       <h2 class="text-2xl font-semibold mb-4">Logout</h2>
-      <ng-lottie 
+      <ng-lottie
         [options]="logoutLottieOptions"
         style="width: 200px; height: 200px; margin: 0 auto"
       ></ng-lottie>
@@ -91,6 +109,5 @@
         Logout
       </button>
     </div>
-
   </div>
 </div>
