@@ -27,13 +27,15 @@
       Your Friends
     </h2>
 
-      <div
-        *ngFor="let user of users"
-        (click)="createConversation(user._id)"
-        class="p-2 hover:bg-gray-100 rounded cursor-pointer text-sm md:text-sm"
-      >
-        <div *ngIf="user.isFriend" class="font-medium text-gray-800">{{ user.fullName }}</div>
+    <div
+      *ngFor="let user of users"
+      (click)="createConversation(user._id)"
+      class="p-2 hover:bg-gray-100 rounded cursor-pointer text-sm md:text-sm"
+    >
+      <div *ngIf="user.isFriend" class="font-medium text-gray-800">
+        {{ user.fullName }}
       </div>
+    </div>
   </div>
 
   <!-- Chat Section -->
@@ -53,7 +55,7 @@
         class="md:hidden text-blue-600 text-sm"
         (click)="showChat = false"
       >
-        Back
+        <i class="fas fa-arrow-left"></i>
       </button>
     </div>
 

@@ -1,113 +1,156 @@
-<!-- Left Sidebar (Fixed - Icons only) -->
-<div
-  class="fixed top-0 left-0 h-screen w-[50px] bg-blue-600 flex flex-col justify-end items-center py-4 space-y-6 text-white z-50"
->
-  <button class="hover:text-blue-200" routerLink="/users">
-    <i class="fas fa-user-plus text-sm md:text-base"></i>
-  </button>
-  <button class="hover:text-blue-200" routerLink="/chat">
-    <i class="fas fa-user-friends text-sm md:text-base"></i>
-  </button>
-  <button class="hover:text-blue-200" routerLink="/settings">
-    <i class="fas fa-cog text-sm md:text-base"></i>
-  </button>
-</div>
-<div class="flex flex-col md:flex-row h-screen bg-gray-100 text-gray-800">
-  <!-- Sidebar -->
+<!-- Responsive Settings Page -->
+<div class="flex h-screen bg-gray-100 text-gray-800">
+  <!-- Left Sidebar (Fixed - Icons only) -->
   <div
-  [ngClass]="{ 'w-48': isSidebarOpen, 'w-16': !isSidebarOpen }"
-  class="ml-[50px] transition-all duration-300 bg-white border-r border-gray-300 flex flex-col"
->
-    <!-- Toggle Button -->
-    <button
-      class="p-4 focus:outline-none text-right pr-6 text-gray-600 hover:text-blue-600"
-      (click)="toggleSidebar()"
-    >
-      <i class="fas fa-bars"></i>
+    class="fixed top-0 left-0 h-screen w-[50px] bg-blue-600 flex flex-col justify-end items-center py-4 space-y-6 text-white z-50"
+  >
+    <button class="hover:text-blue-200" routerLink="/users">
+      <i class="fas fa-user-plus text-sm md:text-base"></i>
     </button>
-
-    <!-- Menu Items -->
-    <nav class="flex-1 space-y-2 mt-4 px-2">
-      <button
-        class="flex items-center space-x-2 w-full px-4 py-2 rounded-lg hover:bg-blue-100"
-        [ngClass]="{ 'bg-blue-100 text-blue-600': activeSection === 'status' }"
-        (click)="activeSection = 'status'"
-      >
-        <i class="fas fa-user-clock"></i>
-        <span *ngIf="isSidebarOpen">Status</span>
-      </button>
-
-      <button
-        class="flex items-center space-x-2 w-full px-4 py-2 rounded-lg hover:bg-blue-100"
-        [ngClass]="{ 'bg-blue-100 text-blue-600': activeSection === 'profile' }"
-        (click)="activeSection = 'profile'"
-      >
-        <i class="fas fa-user"></i>
-        <span *ngIf="isSidebarOpen">Profile</span>
-      </button>
-
-      <button
-        class="flex items-center space-x-2 w-full px-4 py-2 rounded-lg hover:bg-red-100 mt-auto mb-4"
-        [ngClass]="{ 'bg-red-100 text-red-600': activeSection === 'logout' }"
-        (click)="activeSection = 'logout'"
-      >
-        <i class="fas fa-sign-out-alt"></i>
-        <span *ngIf="isSidebarOpen">Logout</span>
-      </button>
-    </nav>
+    <button class="hover:text-blue-200" routerLink="/chat">
+      <i class="fas fa-user-friends text-sm md:text-base"></i>
+    </button>
+    <button class="hover:text-blue-200" routerLink="/settings">
+      <i class="fas fa-cog text-sm md:text-base"></i>
+    </button>
   </div>
 
-  <!-- Main Content -->
-  <div class="flex-1 p-4 md:p-6 overflow-y-auto">
-    <!-- Status Section -->
-    <div *ngIf="activeSection === 'status'" class="text-center">
-      <h2 class="text-2xl font-semibold mb-4">Status</h2>
-      <ng-lottie
-        [options]="statusLottieOptions"
-        style="width: 200px; height: 200px; margin: 0 auto"
-      ></ng-lottie>
-      <p class="text-gray-500 mt-4">Feature coming soon...</p>
-    </div>
-
-    <!-- Profile Section -->
-    <div *ngIf="activeSection === 'profile'">
-      <h2 class="text-2xl font-semibold mb-4">Profile</h2>
-      <div
-        class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-6"
-      >
-        <div class="w-24 h-24 rounded-full bg-gray-300 overflow-hidden">
-          <img
-            src="https://via.placeholder.com/150"
-            alt="Profile"
-            class="w-full h-full object-cover"
-          />
-        </div>
-        <div>
-          <p class="text-base font-medium">Name: {{ userName }}</p>
-          <p class="text-base font-medium">Email: {{ userEmail }}</p>
-        </div>
-      </div>
+  <!-- Settings Content -->
+  <div class="flex-1 ml-[50px] flex flex-col md:flex-row">
+    <!-- Sidebar for Tabs -->
+    <div
+      [ngClass]="{ 'w-48': isSidebarOpen, 'w-16': !isSidebarOpen }"
+      class="hidden md:flex transition-all duration-300 bg-white border-r border-gray-300 flex-col"
+    >
       <button
-        class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg"
-        (click)="changeProfileImage()"
+        class="p-4 focus:outline-none text-right pr-6 text-gray-600 hover:text-blue-600"
+        (click)="toggleSidebar()"
       >
-        Change Profile Image
+        <i class="fas fa-bars"></i>
       </button>
+      <nav class="flex-1 space-y-2 mt-4 px-2">
+        <button
+          class="flex items-center space-x-2 w-full px-4 py-2 rounded-lg hover:bg-blue-100"
+          [ngClass]="{
+            'bg-blue-100 text-blue-600': activeSection === 'status'
+          }"
+          (click)="activeSection = 'status'"
+        >
+          <i class="fas fa-user-clock"></i>
+          <span *ngIf="isSidebarOpen">Status</span>
+        </button>
+        <button
+          class="flex items-center space-x-2 w-full px-4 py-2 rounded-lg hover:bg-blue-100"
+          [ngClass]="{
+            'bg-blue-100 text-blue-600': activeSection === 'profile'
+          }"
+          (click)="activeSection = 'profile'"
+        >
+          <i class="fas fa-user"></i>
+          <span *ngIf="isSidebarOpen">Profile</span>
+        </button>
+        <button
+          class="flex items-center space-x-2 w-full px-4 py-2 rounded-lg hover:bg-red-100 mt-auto mb-4"
+          [ngClass]="{ 'bg-red-100 text-red-600': activeSection === 'logout' }"
+          (click)="activeSection = 'logout'"
+        >
+          <i class="fas fa-sign-out-alt"></i>
+          <span *ngIf="isSidebarOpen">Logout</span>
+        </button>
+      </nav>
     </div>
 
-    <!-- Logout Section -->
-    <div *ngIf="activeSection === 'logout'" class="text-center">
-      <h2 class="text-2xl font-semibold mb-4">Logout</h2>
-      <ng-lottie
-        [options]="logoutLottieOptions"
-        style="width: 200px; height: 200px; margin: 0 auto"
-      ></ng-lottie>
+    <!-- Mobile Tabs -->
+    <div class="md:hidden p-4 flex space-x-4 border-b">
       <button
-        class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg mt-6"
-        (click)="logout()"
+        class="text-sm font-medium"
+        [ngClass]="{
+          'text-blue-600 border-b-2 border-blue-600': activeSection === 'status'
+        }"
+        (click)="activeSection = 'status'"
+      >
+        Status
+      </button>
+      <button
+        class="text-sm font-medium"
+        [ngClass]="{
+          'text-blue-600 border-b-2 border-blue-600':
+            activeSection === 'profile'
+        }"
+        (click)="activeSection = 'profile'"
+      >
+        Profile
+      </button>
+      <button
+        class="text-sm font-medium"
+        [ngClass]="{
+          'text-red-600 border-b-2 border-red-600': activeSection === 'logout'
+        }"
+        (click)="activeSection = 'logout'"
       >
         Logout
       </button>
+    </div>
+
+    <!-- Dynamic Content -->
+    <div class="flex-1 p-4 md:p-6 overflow-y-auto">
+      <div *ngIf="activeSection === 'status'" class="text-center">
+        <h2 class="text-2xl font-semibold mb-4">Status</h2>
+        <ng-lottie
+          [options]="statusLottieOptions"
+          style="width: 200px; height: 200px; margin: 0 auto"
+        ></ng-lottie>
+        <p class="text-gray-500 mt-4">Feature coming soon...</p>
+      </div>
+
+      <div *ngIf="activeSection === 'profile'" class="flex justify-center">
+        <div class="bg-white shadow-lg rounded-xl p-6 w-full max-w-md">
+          <h2 class="text-xl font-semibold text-center text-blue-600 mb-6">
+            Your Profile
+          </h2>
+
+          <div class="flex flex-col items-center space-y-4">
+            <div class="w-28 h-28 rounded-full overflow-hidden shadow">
+              <img
+                src="https://via.placeholder.com/150"
+                alt="Profile"
+                class="w-full h-full object-cover"
+              />
+            </div>
+
+            <div class="text-center">
+              <p class="text-lg font-medium text-gray-700">
+                Name: <span class="font-semibold">{{ userName }}</span>
+              </p>
+              <p class="text-lg font-medium text-gray-700">
+                Email:
+                <span class="text-sm text-gray-500">{{ userEmail }}</span>
+              </p>
+            </div>
+
+            <button
+              class="mt-4 bg-blue-500 hover:bg-blue-600 transition text-white px-6 py-2 rounded-lg shadow"
+              (click)="changeProfileImage()"
+            >
+              Change Profile Image
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="activeSection === 'logout'" class="text-center">
+        <h2 class="text-2xl font-semibold mb-4">Logout</h2>
+        <ng-lottie
+          [options]="logoutLottieOptions"
+          style="width: 200px; height: 200px; margin: 0 auto"
+        ></ng-lottie>
+        <button
+          class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg mt-6"
+          (click)="logout()"
+        >
+          Logout
+        </button>
+      </div>
     </div>
   </div>
 </div>
