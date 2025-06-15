@@ -32,7 +32,11 @@
       (click)="createConversation(user._id)"
       class="p-2 hover:bg-gray-100 rounded cursor-pointer text-sm md:text-sm"
     >
-      <div *ngIf="user.isFriend" class="font-medium text-gray-800">
+      <!-- Show only if user is friend AND not the logged-in user -->
+      <div
+        *ngIf="user.isFriend && user._id !== currentUserId"
+        class="font-medium text-gray-800"
+      >
         {{ user.fullName }}
       </div>
     </div>
@@ -49,7 +53,7 @@
       class="p-3 md:p-4 border-b bg-white shadow-sm flex justify-between items-center"
     >
       <h3 class="text-base md:text-lg font-semibold text-gray-700">
-        {{ selectedUser?.fullName || "Chat Area" }}
+        {{ username || "Chat Area" }}
       </h3>
       <button
         class="md:hidden text-blue-600 text-sm"

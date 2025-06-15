@@ -23,6 +23,8 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   onUserClick(user: any) {
     this.selectedUser = user;
+    console.log(user);
+    
     this.conversationId = 'dummyId'; // replace with real
   }
 
