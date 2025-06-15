@@ -23,6 +23,6 @@ export class UserService {
   }
 
   addFriend(id: any) {
-    return this.http.patch(`${this.baseUrl}/friends/addFriend/${id}`, {});
+    return this.http.patch(`${this.baseUrl}friends/addFriend`, { userId: id });
   }
 }
