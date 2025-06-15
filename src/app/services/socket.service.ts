@@ -10,7 +10,7 @@ export class SocketService {
   private socket!: Socket;
 
   constructor() {
-    this.socket = io('http://localhost:3001');
+    this.socket = io('https://my-chat-backend-production-2bd5.up.railway.app');
     this.socket.on('connect', () => {
       console.log(`🟢 Socket connected: ${this.socket.id}`);
     });
