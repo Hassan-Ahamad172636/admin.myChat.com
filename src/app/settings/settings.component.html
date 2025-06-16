@@ -110,29 +110,61 @@
           </h2>
 
           <div class="flex flex-col items-center space-y-4">
-            <div class="w-28 h-28 rounded-full overflow-hidden shadow">
+            <!-- Profile Image -->
+            <div
+              class="w-28 h-28 rounded-full overflow-hidden shadow cursor-pointer group"
+              (click)="fileInput.click()"
+            >
               <img
-                src="https://via.placeholder.com/150"
+                [src]="
+                  imagePreview ||
+                  (user?.profilePhoto
+                    ? 'https://my-chat-backend-production-2bd5.up.railway.app/' + user?.profilePhoto
+                    : 'https://via.placeholder.com/150')
+                "
                 alt="Profile"
-                class="w-full h-full object-cover"
+                class="w-full h-full object-cover group-hover:opacity-75 transition"
               />
             </div>
 
-            <div class="text-center">
-              <p class="text-lg font-medium text-gray-700">
-                Name: <span class="font-semibold">{{ userName }}</span>
-              </p>
-              <p class="text-lg font-medium text-gray-700">
-                Email:
-                <span class="text-sm text-gray-500">{{ userEmail }}</span>
-              </p>
+            <!-- Hidden File Input -->
+            <input
+              type="file"
+              #fileInput
+              (change)="onFileSelected($event)"
+              accept="image/*"
+              hidden
+            />
+
+            <!-- Form Fields -->
+            <div class="w-full space-y-4">
+              <div>
+                <label class="text-sm font-medium text-gray-700"
+                  >Full Name</label
+                >
+                <input
+                  type="text"
+                  [(ngModel)]="userName"
+                  class="w-full mt-1 px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label class="text-sm font-medium text-gray-700">Email</label>
+                <input
+                  type="email"
+                  [(ngModel)]="userEmail"
+                  class="w-full mt-1 px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
             </div>
 
+            <!-- Save Button -->
             <button
-              class="mt-4 bg-blue-500 hover:bg-blue-600 transition text-white px-6 py-2 rounded-lg shadow"
-              (click)="changeProfileImage()"
+              class="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow"
+              (click)="saveProfileChanges()"
             >
-              Change Profile Image
+              Save Changes
             </button>
           </div>
         </div>

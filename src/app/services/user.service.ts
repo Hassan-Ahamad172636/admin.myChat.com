@@ -18,11 +18,19 @@ export class UserService {
     return this.http.get(`${this.baseUrl}${this.modelPath}get-all`);
   }
 
+  getById(id: any) {
+    return this.http.get(`${this.baseUrl}${this.modelPath}get-by-id/${id}`);
+  }
+
   loginUser(data: any) {
     return this.http.post(`${this.baseUrl}${this.modelPath}login/`, data);
   }
 
   addFriend(id: any) {
     return this.http.patch(`${this.baseUrl}friends/addFriend`, { userId: id });
+  }
+
+  updateProfile(id: any, formData: any) {
+    return this.http.put(`${this.baseUrl}${this.modelPath}update/${id}`, formData);
   }
 }
