@@ -24,6 +24,22 @@ export class AllusersComponent {
     this.fetchUsers();
   }
 
+  getUserIdFromToken() {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+
+    try {
+      const payload = token.split('.')[1];
+      const decodedPayload = JSON.parse(atob(payload));
+      return decodedPayload.id || decodedPayload._id || null;
+    } catch (error) {
+      console.error('Token decoding failed:', error);
+      return null;
+    }
+  }
+
+  loggedInUserId = this.getUserIdFromToken(); // e.g., "6854d98f759f79c4444e39fd"
+
   fetchUsers() {
     this.userService.getAllUser().subscribe(
       (res: any) => {
@@ -38,8 +54,22 @@ export class AllusersComponent {
     );
   }
 
+  isUserAlreadyFriend(user: any): boolean {
+    const myId = this.loggedInUserId;
+    return user.friends?.some((friend: any) => friend._id === myId);
+  }
+  
+
   addUser(id: any) {
-    this.userService.addFriend(id).subscribe((resp: any) => {});
+    const userId = this.getUserIdFromToken();
+    let payload = {
+      friends: id,
+      userId: userId,
+    };
+
+    this.userService.addFriend(payload).subscribe((resp: any) => {
+      this.fetchUsers();
+    });
   }
 
   // ngOnChanges() {

@@ -52,16 +52,18 @@
           </h3>
           <p class="text-sm text-gray-500">{{ user.email }}</p>
         </div>
+        <!-- Add+ Button -->
         <button
-          *ngIf="!user.isFriend"
+          *ngIf="!isUserAlreadyFriend(user)"
           class="mt-4 bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600 transition-all"
           (click)="addUser(user._id)"
         >
           Add+
         </button>
 
+        <!-- Added Button -->
         <button
-          *ngIf="user.isFriend"
+          *ngIf="isUserAlreadyFriend(user)"
           class="mt-4 bg-green-500 text-white text-sm px-4 py-2 rounded cursor-default"
           disabled
         >

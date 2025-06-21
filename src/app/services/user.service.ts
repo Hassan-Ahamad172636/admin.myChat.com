@@ -26,11 +26,14 @@ export class UserService {
     return this.http.post(`${this.baseUrl}${this.modelPath}login/`, data);
   }
 
-  addFriend(id: any) {
-    return this.http.patch(`${this.baseUrl}friends/addFriend`, { userId: id });
+  addFriend(payload: { friends: any; userId: any }) {
+    return this.http.patch(`${this.baseUrl}friends/addFriend`, payload);
   }
 
   updateProfile(id: any, formData: any) {
-    return this.http.put(`${this.baseUrl}${this.modelPath}update/${id}`, formData);
+    return this.http.put(
+      `${this.baseUrl}${this.modelPath}update/${id}`,
+      formData
+    );
   }
 }
