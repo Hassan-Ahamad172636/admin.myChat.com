@@ -1,74 +1,79 @@
-<div class="min-h-screen bg-gray-100 text-gray-800 flex items-center justify-center px-4 py-6">
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl w-full items-center">
-
-    <!-- Left Side: Lottie -->
-    <div class="hidden md:flex justify-center">
+<div
+  class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-blue-200 px-4 py-10"
+>
+  <div
+    class="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl grid grid-cols-1 md:grid-cols-2 gap-8 p-8 w-full max-w-5xl"
+  >
+    <!-- Lottie Animation (Left side) -->
+    <div class="hidden md:flex justify-center items-center">
       <ng-lottie
         [options]="{
           path: 'https://assets4.lottiefiles.com/packages/lf20_t9gkkhz4.json',
           autoplay: true,
           loop: true
         }"
-        class="h-40 w-40 lg:h-60 lg:w-60"
+        class="h-56 w-56 lg:h-72 lg:w-72"
       ></ng-lottie>
     </div>
 
-    <!-- Right Side: Form -->
-    <div class="w-full">  
-      <div class="bg-white border border-gray-200 rounded-xl p-5 md:p-6 shadow-md">
-        <h2 class="text-lg font-semibold text-center mb-3">Create an Account</h2>
+    <!-- Form Area (Right side) -->
+    <div class="w-full">
+      <h2 class="text-2xl font-bold text-center text-blue-700 mb-6">
+        Create Your Account
+      </h2>
 
-        <!-- Inputs -->
-        <div class="space-y-3 text-sm">
-          <div>
-            <label class="block mb-1 text-gray-600">Full Name</label>
-            <input
-              type="text"
-              [(ngModel)]="userObj.fullName"
-              placeholder="Your name..."
-              class="w-full p-2 rounded-md bg-gray-50 border border-gray-300 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label class="block mb-1 text-gray-600">Email</label>
-            <input
-              type="email"
-              [(ngModel)]="userObj.email"
-              placeholder="Email address..."
-              class="w-full p-2 rounded-md bg-gray-50 border border-gray-300 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label class="block mb-1 text-gray-600">Password</label>
-            <input
-              type="password"
-              [(ngModel)]="userObj.password"
-              placeholder="Create a password..."
-              class="w-full p-2 rounded-md bg-gray-50 border border-gray-300 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
-          </div>
-
-          <button
-            (click)="createUser()"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md transition duration-150"
-          >
-            Register
-          </button>
-
-          <p class="text-xs text-center mt-3 text-gray-500">
-            Already have an account?
-            <a
-              routerLink="/login"
-              class="text-blue-600 underline hover:text-blue-500"
-            >
-              Login here
-            </a>
-          </p>
+      <div class="space-y-5 text-sm">
+        <!-- Full Name -->
+        <div>
+          <label class="block mb-1 text-gray-600 font-medium">Full Name</label>
+          <input
+            type="text"
+            [(ngModel)]="userObj.fullName"
+            placeholder="Your full name"
+            class="w-full p-3 rounded-xl border border-gray-300 bg-white shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+          />
         </div>
+
+        <!-- Email -->
+        <div>
+          <label class="block mb-1 text-gray-600 font-medium"
+            >Email Address</label
+          >
+          <input
+            type="email"
+            [(ngModel)]="userObj.email"
+            placeholder="your@email.com"
+            class="w-full p-3 rounded-xl border border-gray-300 bg-white shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+          />
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label class="block mb-1 text-gray-600 font-medium">Password</label>
+          <input
+            type="password"
+            [(ngModel)]="userObj.password"
+            placeholder="Create a strong password"
+            class="w-full p-3 rounded-xl border border-gray-300 bg-white shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+          />
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          (click)="createUser()"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white text-base font-semibold py-3 rounded-xl transition duration-200"
+        >
+          Sign Up
+        </button>
+
+        <!-- Already have an account -->
+        <p class="text-center text-gray-500 text-sm">
+          Already have an account?
+          <a routerLink="/login" class="text-blue-600 hover:underline"
+            >Login here</a
+          >
+        </p>
       </div>
     </div>
-
   </div>
 </div>

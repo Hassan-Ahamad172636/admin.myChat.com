@@ -24,7 +24,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   onUserClick(user: any) {
     this.selectedUser = user;
     console.log(user);
-    
+
     this.conversationId = 'dummyId'; // replace with real
   }
 
@@ -39,7 +39,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   };
 
   currentUserId: any;
-  users: any[] = [];
+  users: any;
   chats: any[] = [];
   message: any;
   conversationId: any;
@@ -125,9 +125,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   getAllUser() {
-    this._userService.getAllUser().subscribe({
+    this._userService.getById(this.currentUserId).subscribe({
       next: (resp: any) => {
-        this.users = resp.data.users || [];
+        this.users = resp.data.user || {};
       },
       error: (err) => {
         console.error('Error fetching users', err);
@@ -175,5 +175,3 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
   }
 }
-
-// is code mein fil hal socket ko comment ker do or har message send kene ya conversation create kerne per get messages wali api caal  kerwa do

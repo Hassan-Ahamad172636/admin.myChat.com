@@ -1,71 +1,76 @@
-<div class="min-h-screen bg-gray-100 text-gray-800 flex items-center justify-center px-4 py-10">
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-6xl w-full items-center">
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-blue-200 px-4 py-10">
+  <div
+    class="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl grid grid-cols-1 md:grid-cols-2 gap-8 p-8 w-full max-w-5xl"
+  >
+    <!-- Login Form (Left Side) -->
+    <div class="w-full order-2 md:order-1">
+      <h2 class="text-2xl font-bold text-center text-blue-700 mb-6">
+        Login to Your Account
+      </h2>
 
-    <!-- Left Side: Lottie -->
-    <div class="hidden md:flex justify-center">
-      <ng-lottie
-        [options]="lottieOptions"
-        class="h-60 w-60 lg:h-80 lg:w-80"
-      ></ng-lottie>
-    </div>
-
-    <!-- Right Side: Login Form -->
-    <div class="w-full">
-      <div class="bg-white border border-gray-200 rounded-2xl p-6 md:p-8 shadow-xl">
-        <h2 class="text-xl font-semibold text-center mb-4">Login to Your Account</h2>
-
-        <div class="space-y-4 text-sm">
-          <div>
-            <label class="block mb-1 text-gray-600">Email</label>
-            <input
-              type="email"
-              [(ngModel)]="userObj.email"
-              placeholder="Email address..."
-              class="w-full p-2 rounded-md bg-gray-50 border border-gray-300 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label class="block mb-1 text-gray-600">Password</label>
-            <input
-              type="password"
-              [(ngModel)]="userObj.password"
-              placeholder="Your password..."
-              class="w-full p-2 rounded-md bg-gray-50 border border-gray-300 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <button
-            (click)="login()"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md transition duration-200"
-          >
-            Login
-          </button>
-
-          <div class="flex items-center my-4 text-gray-400 text-xs">
-            <hr class="flex-grow border-gray-300" />
-            <span class="px-2">OR</span>
-            <hr class="flex-grow border-gray-300" />
-          </div>
-
-          <button
-            class="w-full border border-blue-500 text-blue-500 hover:bg-blue-50 p-2 rounded-md transition duration-200"
-          >
-            Login with Google
-          </button>
-
-          <p class="text-xs text-center mt-4 text-gray-500">
-            Don’t have an account?
-            <a
-              routerLink="/"
-              class="text-blue-600 underline hover:text-blue-500"
-            >
-              Register here
-            </a>
-          </p>
+      <div class="space-y-5 text-sm">
+        <!-- Email -->
+        <div>
+          <label class="block mb-1 text-gray-600 font-medium">Email</label>
+          <input
+            type="email"
+            [(ngModel)]="userObj.email"
+            placeholder="your@email.com"
+            class="w-full p-3 rounded-xl border border-gray-300 bg-white shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+          />
         </div>
+
+        <!-- Password -->
+        <div>
+          <label class="block mb-1 text-gray-600 font-medium">Password</label>
+          <input
+            type="password"
+            [(ngModel)]="userObj.password"
+            placeholder="Your password..."
+            class="w-full p-3 rounded-xl border border-gray-300 bg-white shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+          />
+        </div>
+
+        <!-- Login Button -->
+        <button
+          (click)="login()"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white text-base font-semibold py-3 rounded-xl transition duration-200"
+        >
+          Login
+        </button>
+
+        <!-- OR Divider -->
+        <div class="flex items-center my-4 text-gray-400 text-xs">
+          <hr class="flex-grow border-gray-300" />
+          <span class="px-2">OR</span>
+          <hr class="flex-grow border-gray-300" />
+        </div>
+
+        <!-- Google Login -->
+        <button
+          class="w-full border border-blue-500 text-blue-600 hover:bg-blue-50 py-2 rounded-xl transition duration-200"
+        >
+          Login with Google
+        </button>
+
+        <!-- Register Link -->
+        <p class="text-center text-xs mt-4 text-gray-500">
+          Don’t have an account?
+          <a routerLink="/" class="text-blue-600 hover:underline">Register here</a>
+        </p>
       </div>
     </div>
 
+    <!-- Lottie Animation (Right Side) -->
+    <div class="hidden md:flex justify-center items-center order-1 md:order-2">
+      <ng-lottie
+        [options]="{
+          path: 'https://assets4.lottiefiles.com/packages/lf20_t9gkkhz4.json',
+          autoplay: true,
+          loop: true
+        }"
+        class="h-56 w-56 lg:h-72 lg:w-72"
+      ></ng-lottie>
+    </div>
   </div>
 </div>

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
+import { SnackService } from '../services/snackbar.service';
 
 @Component({
   selector: 'app-login',
@@ -10,7 +11,8 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   constructor(
     private _userService: UserService,
-    private router: Router
+    private router: Router,
+    private snackbar: SnackService
   ) {}
   loginData: any = {
     email: '',
@@ -32,8 +34,13 @@ export class LoginComponent {
   };
 
   login() {
+    if(!this.userObj?.email || !this.userObj?.password) {
+      this.snackbar.show("Please fill all required fields!", 'error');
+      return
+    }
     this._userService.loginUser(this.userObj).subscribe((resp: any) => {
       localStorage.setItem('token', resp.data.token)
+      this.snackbar.show("User logged in successfully!", 'success');
       this.router.navigate(['/chat'])
     });
   }

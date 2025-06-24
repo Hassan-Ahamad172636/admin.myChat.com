@@ -12,6 +12,8 @@ export class AllusersComponent {
   searchQuery: string = '';
   loading: boolean = true;
 
+  addedFriendIds = new Set<string>(); // ✅ tracks newly added users (and stored locally)
+
   loadingLottie: any = {
     path: 'https://lottie.host/19df0d1b-1e15-4203-8b64-9270de80222b/4GSb8yUBxM.json',
   };
@@ -21,6 +23,7 @@ export class AllusersComponent {
   };
 
   constructor(private userService: UserService) {
+    this.loadAddedFriendIds(); // 🔁 load from localStorage
     this.fetchUsers();
   }
 
@@ -38,12 +41,15 @@ export class AllusersComponent {
     }
   }
 
-  loggedInUserId = this.getUserIdFromToken(); // e.g., "6854d98f759f79c4444e39fd"
+  loggedInUserId = this.getUserIdFromToken();
 
   fetchUsers() {
     this.userService.getAllUser().subscribe(
       (res: any) => {
-        this.users = res.data.users;
+        const allUsers = res.data.users;
+        this.users = allUsers.filter(
+          (user: any) => user._id !== this.loggedInUserId
+        );
         this.filteredUsers = this.users;
         this.loading = false;
       },
@@ -55,28 +61,56 @@ export class AllusersComponent {
   }
 
   isUserAlreadyFriend(user: any): boolean {
-    const myId = this.loggedInUserId;
-    return user.friends?.some((friend: any) => friend._id === myId);
+    return (
+      user.friends?.some((friend: any) => friend._id === this.loggedInUserId) ||
+      this.addedFriendIds.has(user._id)
+    );
   }
-  
 
-  addUser(id: any) {
+  addUser(id: string) {
+    if (this.addedFriendIds.has(id)) return;
+
+    this.addedFriendIds.add(id);
+    this.saveAddedFriendIds(); // ✅ save to localStorage
+
     const userId = this.getUserIdFromToken();
-    let payload = {
+    const payload = {
       friends: id,
       userId: userId,
     };
 
-    this.userService.addFriend(payload).subscribe((resp: any) => {
-      this.fetchUsers();
+    this.userService.addFriend(payload).subscribe({
+      next: () => {
+        console.log('Friend added:', id);
+      },
+      error: (err) => {
+        console.error('Add friend failed', err);
+      },
     });
   }
 
-  // ngOnChanges() {
-  //   this.filterUsers();
-  // }
+  // ✅ Save Set to localStorage
+  saveAddedFriendIds() {
+    localStorage.setItem(
+      'addedFriendIds',
+      JSON.stringify([...this.addedFriendIds])
+    );
+  }
 
-  // Live filtering
+  // ✅ Load Set from localStorage
+  loadAddedFriendIds() {
+    const stored = localStorage.getItem('addedFriendIds');
+    if (stored) {
+      try {
+        this.addedFriendIds = new Set(JSON.parse(stored));
+      } catch (e) {
+        console.error('Failed to parse addedFriendIds from localStorage', e);
+        this.addedFriendIds = new Set();
+      }
+    }
+  }
+
+  // ✅ Live filtering
   ngDoCheck() {
     this.filteredUsers = this.users.filter((user) =>
       user.fullName.toLowerCase().includes(this.searchQuery.toLowerCase())

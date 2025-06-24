@@ -1,87 +1,127 @@
-<!-- Left Sidebar (Fixed - Icons only) -->
-<div
-  class="fixed top-0 left-0 h-screen w-[50px] bg-blue-600 flex flex-col justify-end items-center py-4 space-y-6 text-white z-50"
->
-  <button class="hover:text-blue-200" routerLink="/users">
-    <i class="fas fa-user-plus text-sm md:text-base"></i>
-  </button>
-  <button class="hover:text-blue-200" routerLink="/chat">
-    <i class="fas fa-user-friends text-sm md:text-base"></i>
-  </button>
-  <button class="hover:text-blue-200" routerLink="/settings">
-    <i class="fas fa-cog text-sm md:text-base"></i>
-  </button>
-</div>
-
-<!-- Main Content Wrapper (Add left margin to adjust for sidebar) -->
-<div class="min-h-screen bg-gray-100 p-4 md:p-8 ml-[50px]">
-  <div class="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-6">
-    <!-- Header -->
-    <div
-      class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6"
+<!-- Layout Wrapper -->
+<div class="min-h-screen bg-sky-300 flex flex-col">
+  <!-- Fixed Left Sidebar (Only on Desktop) -->
+  <div
+    class="hidden md:flex w-20 bg-blue-700 text-white fixed top-0 left-0 h-full flex-col items-center py-8 space-y-10 z-10"
+  >
+    <button class="hover:text-blue-300 transition-colors duration-200">
+      <i class="fas fa-user-plus text-xl"></i>
+    </button>
+    <button
+      routerLink="/chat"
+      class="hover:text-blue-300 transition-colors duration-200"
     >
-      <h2 class="text-xl font-bold text-gray-800">All Users</h2>
-      <input
-        type="text"
-        [(ngModel)]="searchQuery"
-        placeholder="Search users..."
-        class="mt-3 sm:mt-0 border border-gray-300 rounded-md px-4 py-2 w-full sm:w-64 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
-
-    <!-- Loading State -->
-    <div *ngIf="loading" class="flex justify-center items-center py-12">
-      <ng-lottie
-        [options]="loadingLottie"
-        style="width: 150px; height: 150px"
-      ></ng-lottie>
-    </div>
-
-    <!-- Users List -->
-    <div
-      *ngIf="!loading && filteredUsers.length > 0"
-      class="grid gap-4 grid-cols-1 sm:grid-cols-2"
+      <i class="fas fa-user-friends text-xl"></i>
+    </button>
+    <button
+      routerLink="/settings"
+      class="hover:text-blue-300 transition-colors duration-200"
     >
+      <i class="fas fa-cog text-xl"></i>
+    </button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex-1 px-4 py-6 md:ml-20">
+    <div class="bg-white shadow-xl rounded-2xl p-6">
+      <!-- Header -->
       <div
-        *ngFor="let user of filteredUsers"
-        class="p-4 border rounded-lg bg-gray-50 hover:bg-blue-50 transition flex flex-col justify-between"
+        class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8"
       >
-        <div>
-          <h3 class="text-base font-semibold text-gray-700">
-            {{ user.fullName }}
-          </h3>
-          <p class="text-sm text-gray-500">{{ user.email }}</p>
+        <h2 class="text-2xl font-bold text-gray-800">All Users</h2>
+        <div
+          class="flex items-center border border-sky-400 bg-white rounded-full px-4 py-2 w-full md:w-72"
+        >
+          <i class="fas fa-search text-sky-500 mr-2"></i>
+          <input
+            type="text"
+            [(ngModel)]="searchQuery"
+            placeholder="Search users..."
+            class="flex-1 bg-transparent outline-none text-sm text-gray-700"
+          />
         </div>
-        <!-- Add+ Button -->
-        <button
-          *ngIf="!isUserAlreadyFriend(user)"
-          class="mt-4 bg-blue-500 text-white text-sm px-4 py-2 rounded hover:bg-blue-600 transition-all"
-          (click)="addUser(user._id)"
-        >
-          Add+
-        </button>
+      </div>
 
-        <!-- Added Button -->
-        <button
-          *ngIf="isUserAlreadyFriend(user)"
-          class="mt-4 bg-green-500 text-white text-sm px-4 py-2 rounded cursor-default"
-          disabled
+      <!-- Loading Spinner -->
+      <div *ngIf="loading" class="flex justify-center items-center py-14">
+        <ng-lottie
+          [options]="loadingLottie"
+          style="width: 160px; height: 160px"
+        ></ng-lottie>
+      </div>
+
+      <!-- Users Grid -->
+      <div
+        *ngIf="!loading && filteredUsers.length > 0"
+        class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3"
+      >
+        <div
+          *ngFor="let user of filteredUsers"
+          class="p-5 border border-gray-200 rounded-xl bg-white hover:shadow-md transition-all"
         >
-          Added
-        </button>
+          <div class="mb-4">
+            <h3 class="text-lg font-semibold text-gray-800">
+              {{ user.fullName }}
+            </h3>
+            <p class="text-sm text-gray-500">{{ user.email }}</p>
+          </div>
+
+          <!-- Add / Added Button -->
+          <div>
+            <button
+              *ngIf="!isUserAlreadyFriend(user)"
+              class="w-full bg-blue-600 text-white text-sm py-2 rounded-lg hover:bg-blue-700 transition-all"
+              (click)="addUser(user._id)"
+            >
+              Add+
+            </button>
+
+            <button
+              *ngIf="isUserAlreadyFriend(user)"
+              class="w-full bg-green-500 text-white text-sm py-2 rounded-lg cursor-default"
+              disabled
+            >
+              Added
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Users Found -->
+      <div
+        *ngIf="!loading && filteredUsers.length === 0"
+        class="flex flex-col justify-center items-center py-14"
+      >
+        <ng-lottie
+          [options]="notFoundLottie"
+          style="width: 180px; height: 180px"
+        ></ng-lottie>
+        <p class="text-gray-500 text-base mt-6">No users found...</p>
       </div>
     </div>
+  </div>
 
-    <!-- No Users Found -->
-    <div
-      *ngIf="!loading && filteredUsers.length === 0"
-      class="flex flex-col justify-center items-center py-10"
+  <!-- Bottom Nav (Mobile Only) -->
+  <div
+    class="fixed bottom-0 left-0 right-0 bg-blue-700 text-white flex justify-around items-center h-16 z-50 md:hidden"
+  >
+    <button class="hover:text-blue-300 flex flex-col items-center text-xs">
+      <i class="fas fa-user-plus text-lg"></i>
+      <span>Add</span>
+    </button>
+    <button
+      routerLink="/chat"
+      class="hover:text-blue-300 flex flex-col items-center text-xs"
     >
-      <ng-lottie
-        [options]="notFoundLottie"
-        style="width: 180px; height: 180px"
-      ></ng-lottie>
-      <p class="text-gray-500 text-sm mt-4">No users found...</p>
-    </div>
+      <i class="fas fa-user-friends text-lg"></i>
+      <span>Chat</span>
+    </button>
+    <button
+      routerLink="/settings"
+      class="hover:text-blue-300 flex flex-col items-center text-xs"
+    >
+      <i class="fas fa-cog text-lg"></i>
+      <span>Settings</span>
+    </button>
   </div>
 </div>

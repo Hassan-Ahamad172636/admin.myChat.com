@@ -16,6 +16,7 @@ import { AuthInterceptor } from './auth.interceptor';
 import { SettingsComponent } from './settings/settings.component';
 import { ToastrModule } from 'ngx-toastr';
 import { AllusersComponent } from './allusers/allusers.component';
+import { SnackbarComponent } from './snackbar/snackbar.component';
 
 export function playerFactory() {
   return player;
@@ -27,6 +28,7 @@ export function playerFactory() {
     RegisterComponent,
     LoginComponent,
     ChatComponent,
+    SnackbarComponent,
     NotFoundComponent,
     SettingsComponent,
     AllusersComponent,

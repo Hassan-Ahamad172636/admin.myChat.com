@@ -1,118 +1,165 @@
-<div class="flex h-screen">
-  <!-- Left Sidebar (Icons only) -->
-  <div
-    class="w-[50px] bg-blue-600 flex flex-col justify-end items-center py-4 space-y-6 text-white"
-  >
-    <button class="hover:text-blue-200" routerLink="/users">
-      <i class="fas fa-user-plus text-sm md:text-base"></i>
-    </button>
-    <button class="hover:text-blue-200">
-      <i class="fas fa-user-friends text-sm md:text-base"></i>
-    </button>
-    <button class="hover:text-blue-200" routerLink="/settings">
-      <i class="fas fa-cog text-sm md:text-base"></i>
-    </button>
-  </div>
-
-  <!-- Second Sidebar (Users List) -->
-  <div
-    [ngClass]="{
-      'w-[250px]': !isMobileView,
-      'w-full': isMobileView && !showChat
-    }"
-    class="bg-white border-r border-gray-300 p-1 overflow-y-auto"
-    *ngIf="!isMobileView || (isMobileView && !showChat)"
-  >
-    <h2 class="text-base md:text-lg font-semibold mb-4 text-gray-700 p-2">
-      Your Friends
-    </h2>
-
+<div class="flex flex-col h-screen">
+  <!-- Main Content Area -->
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Sidebar (Only on Desktop) -->
     <div
-      *ngFor="let user of users"
-      (click)="createConversation(user._id)"
-      class="p-2 hover:bg-gray-100 rounded cursor-pointer text-sm md:text-sm"
+      class="hidden md:flex w-20 bg-blue-700 text-white flex-col items-center py-8 space-y-10"
     >
-      <!-- Show only if user is friend AND not the logged-in user -->
+      <button routerLink="/users" class="hover:text-blue-300">
+        <i class="fas fa-user-plus text-xl"></i>
+      </button>
+      <button class="hover:text-blue-300">
+        <i class="fas fa-user-friends text-xl"></i>
+      </button>
+      <button routerLink="/settings" class="hover:text-blue-300">
+        <i class="fas fa-cog text-xl"></i>
+      </button>
+    </div>
+
+    <!-- Contacts Panel -->
+    <div
+      [ngClass]="{
+        'min-w-[400px] max-w-sm': !isMobileView,
+        'w-full': isMobileView && !showChat
+      }"
+      class="bg-sky-50 h-full border-r border-sky-400 overflow-y-auto"
+      *ngIf="!isMobileView || (isMobileView && !showChat)"
+    >
+      <h2 class="text-3xl font-bold p-6 bg-sky-300 m-3 rounded-xl text-white">
+        M Chat
+        <hr class="my-5 text-sky-600" />
+        <div
+          class="flex items-center w-full max-w-md border border-sky-400 rounded-full px-4 py-2 bg-white shadow-sm"
+        >
+          <i class="fas fa-search text-sky-500 mr-3"></i>
+          <input
+            type="text"
+            placeholder="Search..."
+            class="flex-1 bg-transparent focus:outline-none text-sm text-sky-700"
+          />
+        </div>
+      </h2>
+
+      <ul class="space-y-3">
+        <li>
+          <div
+            class="px-4 bg-sky-300 m-3 rounded-xl"
+            *ngFor="let friend of users?.friends"
+          >
+            <a
+              (click)="createConversation(friend._id)"
+              class="flex items-center gap-4 py-3 rounded-lg cursor-pointer"
+            >
+              <img
+                class="w-12 h-12 rounded-full object-cover"
+                [src]="
+                  friend?.profilePhoto
+                    ? 'https://my-chat-backend-production-2bd5.up.railway.app/' +
+                      friend?.profilePhoto
+                    : 'https://www.shutterstock.com/image-vector/avatar-gender-neutral-silhouette-vector-600nw-2470054311.jpg'
+                "
+                alt="Profile"
+              />
+              <span class="text-white font-medium text-xl">
+                {{ friend.fullName }}
+              </span>
+            </a>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Chat Panel -->
+    <div
+      class="flex-1 flex flex-col bg-gray-50"
+      *ngIf="!isMobileView || (isMobileView && showChat)"
+    >
+      <!-- Header -->
       <div
-        *ngIf="user.isFriend && user._id !== currentUserId"
-        class="font-medium text-gray-800"
+        *ngIf="conversationId"
+        class="flex justify-between items-center p-6 bg-white shadow-md"
       >
-        {{ user.fullName }}
+        <h3 class="text-xl font-semibold text-gray-800">
+          {{ username || "Chat Area" }}
+        </h3>
+        <button class="md:hidden text-blue-600" (click)="showChat = false">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+      </div>
+
+      <!-- Messages -->
+      <div class="flex-1 overflow-y-auto p-6 space-y-3">
+        <ng-container *ngIf="messages.length > 0; else emptyChat">
+          <div
+            *ngFor="let msg of messages"
+            class="flex"
+            [ngClass]="{
+              'justify-end': msg.senderId === currentUserId,
+              'justify-start': msg.senderId !== currentUserId
+            }"
+          >
+            <div
+              [ngClass]="{
+                'bg-blue-500 text-white': msg.senderId === currentUserId,
+                'bg-white text-gray-800 border border-gray-300':
+                  msg.senderId !== currentUserId
+              }"
+              class="p-3 rounded-xl max-w-[70%] text-base"
+            >
+              {{ msg.message }}
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-template #emptyChat>
+          <div class="flex items-center justify-center h-full">
+            <ng-lottie
+              [options]="lottieOptions"
+              style="width: 220px; height: 220px"
+            ></ng-lottie>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Input Area -->
+      <div
+        *ngIf="conversationId"
+        class="p-6 bg-white border-t flex items-center gap-4 mb-16 md:mb-0"
+      >
+        <!-- Input Field with Enter Key -->
+        <input
+          [(ngModel)]="message"
+          (keydown.enter)="sendMessage()"
+          placeholder="Type a message"
+          class="flex-1 px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        <!-- Send Button -->
+        <button
+          (click)="sendMessage()"
+          class="bg-blue-600 text-white px-5 py-2 text-base rounded-lg hover:bg-blue-700"
+        >
+          Send
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- Chat Section -->
+  <!-- Bottom Nav for Mobile -->
   <div
-    class="flex-1 bg-gray-50 flex flex-col"
-    *ngIf="!isMobileView || (isMobileView && showChat)"
+    class="fixed bottom-0 left-0 right-0 bg-blue-700 text-white flex justify-around items-center h-16 z-50 md:hidden"
   >
-    <!-- Header -->
-    <div
-      *ngIf="conversationId"
-      class="p-3 md:p-4 border-b bg-white shadow-sm flex justify-between items-center"
-    >
-      <h3 class="text-base md:text-lg font-semibold text-gray-700">
-        {{ username || "Chat Area" }}
-      </h3>
-      <button
-        class="md:hidden text-blue-600 text-sm"
-        (click)="showChat = false"
-      >
-        <i class="fas fa-arrow-left"></i>
-      </button>
-    </div>
-
-    <!-- Messages -->
-    <div class="flex-1 overflow-y-auto p-3 md:p-4">
-      <ng-container *ngIf="messages.length > 0; else emptyChat">
-        <div
-          *ngFor="let msg of messages"
-          class="mb-2 flex"
-          [ngClass]="{
-            'justify-end': msg.senderId === currentUserId,
-            'justify-start': msg.senderId !== currentUserId
-          }"
-        >
-          <div
-            [ngClass]="{
-              'bg-blue-500 text-white': msg.senderId === currentUserId,
-              'bg-white text-gray-800 border': msg.senderId !== currentUserId
-            }"
-            class="p-2 rounded max-w-xs text-xs md:text-sm"
-          >
-            {{ msg.message }}
-          </div>
-        </div>
-      </ng-container>
-
-      <!-- Empty Chat Lottie -->
-      <ng-template #emptyChat>
-        <div class="flex items-center justify-center h-full">
-          <ng-lottie
-            [options]="lottieOptions"
-            style="width: 200px; height: 200px"
-          ></ng-lottie>
-        </div>
-      </ng-template>
-    </div>
-
-    <!-- Input -->
-    <div
-      *ngIf="conversationId"
-      class="p-3 md:p-4 border-t bg-white flex items-center gap-2"
-    >
-      <input
-        [(ngModel)]="message"
-        placeholder="Type a message"
-        class="flex-1 border border-gray-300 rounded px-3 py-2 text-xs md:text-sm focus:outline-none"
-      />
-      <button
-        (click)="sendMessage()"
-        class="bg-blue-600 text-white px-3 py-1.5 text-xs md:text-sm rounded hover:bg-blue-700"
-      >
-        Send
-      </button>
-    </div>
+    <button routerLink="/users" class="hover:text-blue-300 flex flex-col items-center text-sm">
+      <i class="fas fa-user-plus text-lg"></i>
+      <span class="text-xs">Add</span>
+    </button>
+    <button class="hover:text-blue-300 flex flex-col items-center text-sm">
+      <i class="fas fa-user-friends text-lg"></i>
+      <span class="text-xs">Friends</span>
+    </button>
+    <button routerLink="/settings" class="hover:text-blue-300 flex flex-col items-center text-sm">
+      <i class="fas fa-cog text-lg"></i>
+      <span class="text-xs">Settings</span>
+    </button>
   </div>
 </div>

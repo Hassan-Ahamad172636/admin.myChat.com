@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { SnackService } from '../services/snackbar.service';
 
 @Component({
   selector: 'app-register',
@@ -12,7 +13,8 @@ export class RegisterComponent {
   constructor(
     private _userService: UserService,
     private router: Router,
-    private toastr: ToastrService // ✅ inject toastr
+    private toastr: ToastrService, // ✅ inject toastr
+    private snackbar: SnackService
   ) {}
 
   lottieOptions: any = {
@@ -26,24 +28,26 @@ export class RegisterComponent {
     email: '',
     password: '',
   };
-
   createUser() {
-    // ✅ Validate fields first (optional but helpful)
-    if (!this.userObj.fullName || !this.userObj.email || !this.userObj.password) {
-      this.toastr.warning('Please fill in all fields.', 'Missing Info');
+    if (
+      !this.userObj.fullName ||
+      !this.userObj.email ||
+      !this.userObj.password
+    ) {
+      this.snackbar.show('Please fill in all fields.', 'warning');
       return;
     }
 
     this._userService.createUser(this.userObj).subscribe({
       next: (resp: any) => {
-        this.toastr.success('User registered successfully!', 'Success');
+        this.snackbar.show('User registered successfully!', 'success');
         this.router.navigate(['/login']);
       },
       error: (err: any) => {
         if (err.error?.message) {
-          this.toastr.error(err.error.message, 'Error');
+          this.snackbar.show(err.error.message, 'error');
         } else {
-          this.toastr.error('Something went wrong. Please try again.', 'Error');
+          this.snackbar.show('Something went wrong. Please try again.', 'error');
         }
       },
     });
