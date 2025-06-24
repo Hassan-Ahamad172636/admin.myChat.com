@@ -124,9 +124,9 @@
       <!-- Input Area -->
       <div
         *ngIf="conversationId"
-        class="p-6 bg-white border-t flex items-center gap-4 mb-16 md:mb-0"
+        class="p-4 bg-white border-t flex items-center gap-4 md:mb-0 fixed bottom-16 left-0 right-0 z-40"
       >
-        <!-- Input Field with Enter Key -->
+        <!-- Input Field -->
         <input
           [(ngModel)]="message"
           (keydown.enter)="sendMessage()"
@@ -149,7 +149,10 @@
   <div
     class="fixed bottom-0 left-0 right-0 bg-blue-700 text-white flex justify-around items-center h-16 z-50 md:hidden"
   >
-    <button routerLink="/users" class="hover:text-blue-300 flex flex-col items-center text-sm">
+    <button
+      routerLink="/users"
+      class="hover:text-blue-300 flex flex-col items-center text-sm"
+    >
       <i class="fas fa-user-plus text-lg"></i>
       <span class="text-xs">Add</span>
     </button>
@@ -157,7 +160,10 @@
       <i class="fas fa-user-friends text-lg"></i>
       <span class="text-xs">Friends</span>
     </button>
-    <button routerLink="/settings" class="hover:text-blue-300 flex flex-col items-center text-sm">
+    <button
+      routerLink="/settings"
+      class="hover:text-blue-300 flex flex-col items-center text-sm"
+    >
       <i class="fas fa-cog text-lg"></i>
       <span class="text-xs">Settings</span>
     </button>
