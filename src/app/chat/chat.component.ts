@@ -142,7 +142,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this._chatService.conversation({ receiverId: receiverId }).subscribe({
       next: (res: any) => {
         this.conversationId = res?.data?.conversation?._id;
-        this.username = res?.data?.conversation.receiverId.fullName;
+        this.username = res?.data?.conversation.senderId.fullName;
 
         this.getMessages();
 

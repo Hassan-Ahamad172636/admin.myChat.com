@@ -12,19 +12,18 @@ export class AllusersComponent {
   searchQuery: string = '';
   loading: boolean = true;
   currentUser: any;
+  loggedInUserId: string | null = null;
 
-  addedFriendIds = new Set<string>(); // ✅ tracks newly added users (and stored locally)
-
-  loadingLottie: any = {
+  loadingLottie = {
     path: 'https://lottie.host/19df0d1b-1e15-4203-8b64-9270de80222b/4GSb8yUBxM.json',
   };
 
-  notFoundLottie: any = {
+  notFoundLottie = {
     path: 'https://lottie.host/99a22a5c-8b2c-4cc1-a8db-4c070a3f1d0e/vTDbkx0MJM.json',
   };
 
   constructor(private userService: UserService) {
-    this.loadAddedFriendIds(); // 🔁 load from localStorage
+    this.loggedInUserId = this.getUserIdFromToken();
     this.fetchUsers();
     this.getById();
   }
@@ -32,68 +31,56 @@ export class AllusersComponent {
   getUserIdFromToken() {
     const token = localStorage.getItem('token');
     if (!token) return null;
-
     try {
       const payload = token.split('.')[1];
-      const decodedPayload = JSON.parse(atob(payload));
-      return decodedPayload.id || decodedPayload._id || null;
-    } catch (error) {
-      console.error('Token decoding failed:', error);
+      const decoded = JSON.parse(atob(payload));
+      return decoded.id || decoded._id || null;
+    } catch (e) {
+      console.error('Token decode failed:', e);
       return null;
     }
   }
 
-  loggedInUserId = this.getUserIdFromToken();
-
   getById() {
+    if (!this.loggedInUserId) return;
     this.userService.getById(this.loggedInUserId).subscribe((resp: any) => {
-      this.currentUser = resp.data?.user
+      this.currentUser = resp.data?.user;
     });
   }
 
   fetchUsers() {
     this.userService.getAllUser().subscribe(
       (res: any) => {
-        const allUsers = res.data.users;
-        this.users = allUsers.filter(
+        this.users = res.data.users.filter(
           (user: any) => user._id !== this.loggedInUserId
         );
         this.filteredUsers = this.users;
         this.loading = false;
       },
-      (err: any) => {
-        console.error('Error fetching users', err);
+      (err) => {
+        console.error('Error fetching users:', err);
         this.loading = false;
       }
     );
   }
 
   isUserAlreadyFriend(user: any): boolean {
-    const iAmInTheirList = user.friends?.some(
-      (f: any) => f._id === this.loggedInUserId
-    );
-    const theyAreInMyList = this.currentUser?.friends?.some(
+    return this.currentUser?.friends?.some(
       (f: any) => f._id === user._id
-    );
-
-    return (
-      (iAmInTheirList && theyAreInMyList) || this.addedFriendIds.has(user._id)
     );
   }
 
-  addUser(id: string) {
-    if (this.addedFriendIds.has(id)) return; // Already added on UI
+  addUser(userIdToAdd: string) {
+    if (this.isUserAlreadyFriend({ _id: userIdToAdd })) return;
 
-    this.addedFriendIds.add(id); // ✅ Mark as added on UI
-
-    const userId = this.getUserIdFromToken();
     const payload = {
-      friends: id,
-      userId: userId,
+      friends: userIdToAdd,
+      userId: this.loggedInUserId,
     };
 
     this.userService.addFriend(payload).subscribe({
       next: () => {
+        this.getById(); // refresh current user friend list after add
         console.log('✅ Friend added successfully');
       },
       error: (err) => {
@@ -102,28 +89,6 @@ export class AllusersComponent {
     });
   }
 
-  // ✅ Save Set to localStorage
-  saveAddedFriendIds() {
-    localStorage.setItem(
-      'addedFriendIds',
-      JSON.stringify([...this.addedFriendIds])
-    );
-  }
-
-  // ✅ Load Set from localStorage
-  loadAddedFriendIds() {
-    const stored = localStorage.getItem('addedFriendIds');
-    if (stored) {
-      try {
-        this.addedFriendIds = new Set(JSON.parse(stored));
-      } catch (e) {
-        console.error('Failed to parse addedFriendIds from localStorage', e);
-        this.addedFriendIds = new Set();
-      }
-    }
-  }
-
-  // ✅ Live filtering
   ngDoCheck() {
     this.filteredUsers = this.users.filter((user) =>
       user.fullName.toLowerCase().includes(this.searchQuery.toLowerCase())
