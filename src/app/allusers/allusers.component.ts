@@ -11,6 +11,7 @@ export class AllusersComponent {
   filteredUsers: any[] = [];
   searchQuery: string = '';
   loading: boolean = true;
+  currentUser: any;
 
   addedFriendIds = new Set<string>(); // ✅ tracks newly added users (and stored locally)
 
@@ -25,6 +26,7 @@ export class AllusersComponent {
   constructor(private userService: UserService) {
     this.loadAddedFriendIds(); // 🔁 load from localStorage
     this.fetchUsers();
+    this.getById();
   }
 
   getUserIdFromToken() {
@@ -42,6 +44,12 @@ export class AllusersComponent {
   }
 
   loggedInUserId = this.getUserIdFromToken();
+
+  getById() {
+    this.userService.getById(this.loggedInUserId).subscribe((resp: any) => {
+      this.currentUser = resp.data?.user
+    });
+  }
 
   fetchUsers() {
     this.userService.getAllUser().subscribe(
@@ -61,17 +69,22 @@ export class AllusersComponent {
   }
 
   isUserAlreadyFriend(user: any): boolean {
+    const iAmInTheirList = user.friends?.some(
+      (f: any) => f._id === this.loggedInUserId
+    );
+    const theyAreInMyList = this.currentUser?.friends?.some(
+      (f: any) => f._id === user._id
+    );
+
     return (
-      user.friends?.some((friend: any) => friend._id === this.loggedInUserId) ||
-      this.addedFriendIds.has(user._id)
+      (iAmInTheirList && theyAreInMyList) || this.addedFriendIds.has(user._id)
     );
   }
 
   addUser(id: string) {
-    if (this.addedFriendIds.has(id)) return;
+    if (this.addedFriendIds.has(id)) return; // Already added on UI
 
-    this.addedFriendIds.add(id);
-    this.saveAddedFriendIds(); // ✅ save to localStorage
+    this.addedFriendIds.add(id); // ✅ Mark as added on UI
 
     const userId = this.getUserIdFromToken();
     const payload = {
@@ -81,10 +94,10 @@ export class AllusersComponent {
 
     this.userService.addFriend(payload).subscribe({
       next: () => {
-        console.log('Friend added:', id);
+        console.log('✅ Friend added successfully');
       },
       error: (err) => {
-        console.error('Add friend failed', err);
+        console.error('❌ Add friend failed', err);
       },
     });
   }

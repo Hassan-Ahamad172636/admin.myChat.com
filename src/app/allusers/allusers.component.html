@@ -69,19 +69,11 @@
           <!-- Add / Added Button -->
           <div>
             <button
-              *ngIf="!isUserAlreadyFriend(user)"
-              class="w-full bg-blue-600 text-white text-sm py-2 rounded-lg hover:bg-blue-700 transition-all"
               (click)="addUser(user._id)"
+              [disabled]="isUserAlreadyFriend(user)"
+              class="px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50"
             >
-              Add+
-            </button>
-
-            <button
-              *ngIf="isUserAlreadyFriend(user)"
-              class="w-full bg-green-500 text-white text-sm py-2 rounded-lg cursor-default"
-              disabled
-            >
-              Added
+              {{ isUserAlreadyFriend(user) ? "Added" : "Add Friend" }}
             </button>
           </div>
         </div>
