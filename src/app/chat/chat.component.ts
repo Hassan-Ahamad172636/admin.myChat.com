@@ -56,6 +56,8 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.isChatOpenOnMobile = false;
     this.selectedUser = '';
   }
+  searchQuery: string = '';
+  filteredFriends: any[] = []; // filtered list for display
 
   private socketSub!: Subscription;
 
@@ -128,6 +130,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this._userService.getById(this.currentUserId).subscribe({
       next: (resp: any) => {
         this.users = resp.data.user || {};
+        this.filteredFriends = this.users.friends || [];
       },
       error: (err) => {
         console.error('Error fetching users', err);
@@ -135,17 +138,33 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
   }
 
+  onSearchChange() {
+  const query = this.searchQuery.trim().toLowerCase();
+  this.filteredFriends = this.users.friends.filter((friend: any) =>
+    friend.fullName.toLowerCase().includes(query)
+  );
+}
+
+
   createConversation(receiverId: string) {
     if (this.isMobileView) {
       this.showChat = true;
     }
-    this._chatService.conversation({ receiverId: receiverId }).subscribe({
+
+    this._chatService.conversation({ receiverId }).subscribe({
       next: (res: any) => {
         this.conversationId = res?.data?.conversation?._id;
-        this.username = res?.data?.conversation.senderId.fullName;
+
+        // Determine who is the OTHER user (receiver)
+        const conversation = res.data.conversation;
+        const otherUser =
+          conversation.senderId._id === this.currentUserId
+            ? conversation.receiverId
+            : conversation.senderId;
+
+        this.selectedUser = otherUser; // ✅ store full user info (name, photo)
 
         this.getMessages();
-
         this.socketService.joinRoom(this.conversationId);
       },
       error: (err) => {
