@@ -51,7 +51,7 @@
       <nav class="flex-1 mt-4 space-y-2 px-2">
         <!-- Status Button -->
         <button
-          class="flex items-center space-x-3 w-full p-5 rounded-lg text-gray-700 text-3xl hover:bg-sky-300 transition"
+          class="flex items-center space-x-3 w-full p-5 rounded-lg text-sky-900 text-3xl hover:bg-sky-300 transition"
           [ngClass]="{ 'bg-sky-300': activeSection === 'status' }"
           (click)="activeSection = 'status'"
         >
@@ -61,7 +61,7 @@
 
         <!-- Profile Button -->
         <button
-          class="flex items-center space-x-3 w-full p-5 rounded-lg text-gray-700 text-3xl hover:bg-sky-300 transition"
+          class="flex items-center space-x-3 w-full p-5 rounded-lg text-sky-900 text-3xl hover:bg-sky-300 transition"
           [ngClass]="{ 'bg-sky-300 text-blue-600': activeSection === 'profile' }"
           (click)="activeSection = 'profile'"
         >
@@ -71,7 +71,7 @@
 
         <!-- Logout Button -->
         <button
-          class="flex items-center space-x-3 w-full p-5 rounded-lg text-gray-700 text-3xl hover:bg-red-100 transition mt-auto mb-4"
+          class="flex items-center space-x-3 w-full p-5 rounded-lg text-sky-900 text-3xl hover:bg-red-100 transition mt-auto mb-4"
           [ngClass]="{ 'bg-red-100 text-red-600': activeSection === 'logout' }"
           (click)="activeSection = 'logout'"
         >
