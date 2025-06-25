@@ -2,9 +2,7 @@
   <!-- Main Content Area -->
   <div class="flex flex-1 overflow-hidden">
     <!-- Sidebar (Only on Desktop) -->
-    <div
-      class="hidden md:flex w-20 bg-blue-700 text-white flex-col items-center py-8 space-y-10"
-    >
+    <div class="hidden md:flex w-20 bg-blue-700 text-white flex-col items-center py-8 space-y-10">
       <button routerLink="/users" class="hover:text-blue-300">
         <i class="fas fa-user-plus text-xl"></i>
       </button>
@@ -28,9 +26,7 @@
       <h2 class="text-3xl p-6 bg-sky-300 m-3 rounded-xl text-sky-900">
         My Chat
         <hr class="my-5 text-sky-600" />
-        <div
-          class="flex items-center w-full max-w-md border border-sky-400 rounded-full px-4 py-2 bg-white shadow-sm"
-        >
+        <div class="flex items-center w-full max-w-md border border-sky-400 rounded-full px-4 py-2 bg-white shadow-sm">
           <i class="fas fa-search text-sky-500 mr-3"></i>
           <input
             type="text"
@@ -44,10 +40,7 @@
 
       <ul class="space-y-3">
         <li>
-          <div
-            class="px-4 bg-sky-300 m-3 rounded-xl"
-            *ngFor="let friend of filteredFriends"
-          >
+          <div class="px-4 bg-sky-300 m-3 rounded-xl" *ngFor="let friend of filteredFriends">
             <a
               (click)="createConversation(friend._id)"
               class="flex items-center gap-4 py-3 rounded-lg cursor-pointer"
@@ -62,9 +55,7 @@
                 "
                 alt="Profile"
               />
-              <span
-                class="text-sky-900 font-medium text-xl flex items-center gap-2"
-              >
+              <span class="text-sky-900 font-medium text-xl flex items-center gap-2">
                 {{ friend.fullName }}
                 <span
                   [ngClass]="{
@@ -75,6 +66,7 @@
                   title="{{ friend.isOnline ? 'Online' : 'Offline' }}"
                 ></span>
               </span>
+              
             </a>
           </div>
         </li>
@@ -95,19 +87,14 @@
           <img
             *ngIf="selectedUser?.profilePhoto"
             class="w-12 h-12 rounded-full object-cover"
-            [src]="
-              'https://my-chat-backend-production-2bd5.up.railway.app/' +
-              selectedUser.profilePhoto
-            "
+            [src]="'https://my-chat-backend-production-2bd5.up.railway.app/' + selectedUser.profilePhoto"
             alt="User Image"
           />
           <div>
             <p class="text-lg font-semibold text-blue-900">
               {{ selectedUser?.fullName || "Chat Area" }}
             </p>
-            <p class="text-sm text-blue-600">
-              {{ selectedUser?.isOnline ? "Online" : "Offline" }}
-            </p>
+            <p class="text-sm text-blue-600">Online</p>
           </div>
         </div>
 
@@ -130,8 +117,7 @@
             <div
               [ngClass]="{
                 'bg-blue-500 text-white': msg.senderId === currentUserId,
-                'bg-white text-gray-800 border border-gray-300':
-                  msg.senderId !== currentUserId
+                'bg-white text-gray-800 border border-gray-300': msg.senderId !== currentUserId
               }"
               class="p-3 rounded-xl shadow max-w-[75%] text-base"
             >
