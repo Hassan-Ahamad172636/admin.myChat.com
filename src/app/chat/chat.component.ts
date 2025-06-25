@@ -89,10 +89,28 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.checkScreenSize();
     window.addEventListener('resize', this.checkScreenSize.bind(this));
 
-    // ✅ Join room on load (you can adjust this logic later)
+    // ✅ Notify backend: user is online
+    this.socketService.notifyUserOnline(this.currentUserId);
+
+    // ✅ Listen to online/offline status
+    this.socketService.onUserStatusChange().subscribe(({ userId, status }) => {
+      const isOnline = status === 'online';
+
+      this.filteredFriends = this.filteredFriends.map((friend) =>
+        friend._id === userId ? { ...friend, isOnline } : friend
+      );
+
+      this.users.friends = this.users.friends.map((friend: any) =>
+        friend._id === userId ? { ...friend, isOnline } : friend
+      );
+
+      if (this.selectedUser && this.selectedUser._id === userId) {
+        this.selectedUser = { ...this.selectedUser, isOnline };
+      }
+    });
+
     this.joinMyRooms();
 
-    // ✅ Listen for real-time messages
     this.socketSub = this.socketService.onMessage().subscribe((msg: any) => {
       console.log('📥 New socket message received:', msg);
 
@@ -110,6 +128,8 @@ export class ChatComponent implements OnInit, OnDestroy {
     if (this.conversationId) {
       this.socketService.leaveRoom(this.conversationId);
     }
+
+    window.removeEventListener('resize', this.checkScreenSize.bind(this));
   }
 
   getUserIdFromToken() {
@@ -139,12 +159,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   onSearchChange() {
-  const query = this.searchQuery.trim().toLowerCase();
-  this.filteredFriends = this.users.friends.filter((friend: any) =>
-    friend.fullName.toLowerCase().includes(query)
-  );
-}
-
+    const query = this.searchQuery.trim().toLowerCase();
+    this.filteredFriends = this.users.friends.filter((friend: any) =>
+      friend.fullName.toLowerCase().includes(query)
+    );
+  }
 
   createConversation(receiverId: string) {
     if (this.isMobileView) {
