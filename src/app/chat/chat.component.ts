@@ -11,53 +11,29 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit, OnDestroy {
-  isMobileView: boolean = false;
-  showChat: boolean = false;
+  isMobileView = false;
+  showChat = false;
   selectedUser: any = null;
-  checkScreenSize() {
-    this.isMobileView = window.innerWidth <= 768;
-    if (!this.isMobileView) {
-      this.showChat = false;
-    }
-  }
-
-  onUserClick(user: any) {
-    this.selectedUser = user;
-    console.log(user);
-
-    this.conversationId = 'dummyId'; // replace with real
-  }
-
-  lottieOptions: any = {
-    path: 'https://assets2.lottiefiles.com/packages/lf20_tll0j4bb.json', // 👈 You can change Lottie here
+  lottieOptions = {
+    path: 'https://assets2.lottiefiles.com/packages/lf20_tll0j4bb.json',
   };
-
-  lottieSecondOptions: any = {
+  lottieSecondOptions = {
     path: '../../assets/Animation - 1749436448592.json',
     autoplay: true,
     loop: true,
   };
 
+  onlineUserIds = new Set<string>();
   currentUserId: any;
   users: any;
+  filteredFriends: any[] = [];
   chats: any[] = [];
   message: any;
   conversationId: any;
-  messages: any = []; // Initialize empty array
+  messages: any[] = [];
   username: any;
   isChatOpenOnMobile = false;
-
-  openChatOnMobile(userName: string) {
-    this.isChatOpenOnMobile = true;
-    this.selectedUser = userName;
-  }
-
-  closeChatOnMobile() {
-    this.isChatOpenOnMobile = false;
-    this.selectedUser = '';
-  }
-  searchQuery: string = '';
-  filteredFriends: any[] = []; // filtered list for display
+  searchQuery = '';
 
   private socketSub!: Subscription;
 
@@ -67,35 +43,13 @@ export class ChatComponent implements OnInit, OnDestroy {
     private socketService: SocketService
   ) {}
 
-  joinMyRooms() {
-    if (this.conversationId) {
-      this._chatService.getMessages(this.conversationId).subscribe({
-        next: (res: any) => {
-          const allRooms = res.data || [];
-          for (const conv of allRooms) {
-            this.socketService.joinRoom(conv._id);
-          }
-        },
-        error: (err) => {
-          console.error('❌ Failed to join rooms', err);
-        },
-      });
-    }
-  }
-
   ngOnInit() {
     this.getUserIdFromToken();
-    this.getAllUser();
     this.checkScreenSize();
     window.addEventListener('resize', this.checkScreenSize.bind(this));
-
-    // ✅ Join room on load (you can adjust this logic later)
     this.joinMyRooms();
 
-    // ✅ Listen for real-time messages
     this.socketSub = this.socketService.onMessage().subscribe((msg: any) => {
-      console.log('📥 New socket message received:', msg);
-
       if (msg.conversationId === this.conversationId) {
         this.messages = [...this.messages, msg];
       }
@@ -103,13 +57,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.socketSub) {
-      this.socketSub.unsubscribe();
-    }
-
-    if (this.conversationId) {
-      this.socketService.leaveRoom(this.conversationId);
-    }
+    if (this.socketSub) this.socketSub.unsubscribe();
+    if (this.conversationId) this.socketService.leaveRoom(this.conversationId);
   }
 
   getUserIdFromToken() {
@@ -120,6 +69,12 @@ export class ChatComponent implements OnInit, OnDestroy {
           ? (jwtDecode as any).default(token)
           : (jwtDecode as any)(token);
         this.currentUserId = decodedToken.id;
+
+        this.socketService.sendUserId(this.currentUserId); // ✅ Notify backend
+        this.getAllUser(); // ✅ Fetch friends
+        this.socketService.getOnlineUsers().subscribe((userIds: string[]) => {
+          this.onlineUserIds = new Set(userIds); // ✅ Store live list
+        });
       } catch (error) {
         console.error('Invalid token');
       }
@@ -132,44 +87,41 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.users = resp.data.user || {};
         this.filteredFriends = this.users.friends || [];
       },
-      error: (err) => {
-        console.error('Error fetching users', err);
-      },
+      error: (err) => console.error('Error fetching users', err),
     });
   }
 
-  onSearchChange() {
-  const query = this.searchQuery.trim().toLowerCase();
-  this.filteredFriends = this.users.friends.filter((friend: any) =>
-    friend.fullName.toLowerCase().includes(query)
-  );
-}
-
+  joinMyRooms() {
+    if (this.conversationId) {
+      this._chatService.getMessages(this.conversationId).subscribe({
+        next: (res: any) => {
+          const allRooms = res.data || [];
+          for (const conv of allRooms) {
+            this.socketService.joinRoom(conv._id);
+          }
+        },
+        error: (err) => console.error('❌ Failed to join rooms', err),
+      });
+    }
+  }
 
   createConversation(receiverId: string) {
-    if (this.isMobileView) {
-      this.showChat = true;
-    }
+    if (this.isMobileView) this.showChat = true;
 
     this._chatService.conversation({ receiverId }).subscribe({
       next: (res: any) => {
         this.conversationId = res?.data?.conversation?._id;
-
-        // Determine who is the OTHER user (receiver)
         const conversation = res.data.conversation;
         const otherUser =
           conversation.senderId._id === this.currentUserId
             ? conversation.receiverId
             : conversation.senderId;
 
-        this.selectedUser = otherUser; // ✅ store full user info (name, photo)
-
+        this.selectedUser = otherUser;
         this.getMessages();
         this.socketService.joinRoom(this.conversationId);
       },
-      error: (err) => {
-        console.error('Failed to create conversation', err);
-      },
+      error: (err) => console.error('Failed to create conversation', err),
     });
   }
 
@@ -188,9 +140,33 @@ export class ChatComponent implements OnInit, OnDestroy {
       next: () => {
         this.message = '';
       },
-      error: (err) => {
-        console.error('Failed to send message:', err);
-      },
+      error: (err) => console.error('Failed to send message:', err),
     });
+  }
+
+  checkScreenSize() {
+    this.isMobileView = window.innerWidth <= 768;
+    if (!this.isMobileView) this.showChat = false;
+  }
+
+  openChatOnMobile(userName: string) {
+    this.isChatOpenOnMobile = true;
+    this.selectedUser = userName;
+  }
+
+  closeChatOnMobile() {
+    this.isChatOpenOnMobile = false;
+    this.selectedUser = '';
+  }
+
+  onSearchChange() {
+    const query = this.searchQuery.trim().toLowerCase();
+    this.filteredFriends = this.users.friends.filter((friend: any) =>
+      friend.fullName.toLowerCase().includes(query)
+    );
+  }
+
+  isUserOnline(userId: string): boolean {
+    return this.onlineUserIds.has(userId);
   }
 }
